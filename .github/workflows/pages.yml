@@ -1,0 +1,56 @@
+# Rezan Macro Terminal - rebuild daily and publish to GitHub Pages (free, public repo).
+# Repo layout = this folder (build.py, data.json, src/, index.html).
+# One-time click: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# Do not set configure-pages enablement: true. That call needs a personal token;
+# the built-in GITHUB_TOKEN cannot turn Pages on, and the step would fail every run.
+name: build-and-publish
+on:
+  schedule:
+    - cron: "23 6 * * *"    # 06:23 UTC daily (after the Treasury/BLS overnight updates)
+    - cron: "53 21 * * 1-5" # 21:53 UTC weekdays (after the US close: yields/DXY/oil)
+  workflow_dispatch: {}      # "Run workflow" button
+  push:
+    branches: [main]
+permissions:
+  contents: write   # commit the refreshed data.json (also keeps the repo "active" so GitHub doesn't pause the schedule)
+  pages: write
+  id-token: write
+concurrency: { group: pages, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Fetch public data + build index.html (stdlib only, no keys)
+        run: python build.py
+      - name: Commit refreshed data.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.json index.html
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "daily data refresh $(date -u +%F)"
+            # checkout does not set an upstream, so a bare "git push" fails.
+            # A GITHUB_TOKEN push does not start another workflow run, so this does not loop.
+            git push origin HEAD:main
+          fi
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Stage site
+        run: mkdir -p _site && cp index.html _site/index.html && touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: "${{ steps.d.outputs.page_url }}" }
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4
