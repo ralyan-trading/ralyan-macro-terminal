@@ -1,9 +1,9 @@
 {
   "meta": {
     "name": "Rezan Macro Terminal",
-    "asof": "Auto-built 2026-10-19 07:56 UTC \u00b7 yields 2026-10-16 close (real 2026-10-16) \u00b7 calendar 2026-10-19 07:56 UTC",
+    "asof": "Auto-built 2026-10-19 07:59 UTC \u00b7 yields 2026-10-16 close (real 2026-10-16) \u00b7 calendar 2026-10-19 07:59 UTC",
     "disclaimer": "Educational research tool - NOT financial advice. Scores are simple transparent rules, not predictions. Verify all data before trading.",
-    "built_at": "2026-10-19T07:56:38+00:00"
+    "built_at": "2026-10-19T07:59:23+00:00"
   },
   "gold_static": {
     "fri_close": 4165.45,
@@ -66,8 +66,8 @@
       }
     ],
     "dxy_actual": {
-      "value": 102.03,
-      "chg_pct_d": 0.19,
+      "value": 102.08,
+      "chg_pct_d": 0.24,
       "asof": "2026-10-19",
       "source": "CNBC quote feed (unofficial)"
     }
@@ -280,8 +280,8 @@
     "hy_spread_bp": 323,
     "hy_chg_bp": 12,
     "asof": "2026-10-15",
-    "brent": 107.02,
-    "wti": 99.5,
+    "brent": 107.17,
+    "wti": 99.51,
     "oil_asof": "2026-10-19 (CNBC, front-month futures)",
     "headlines": [
       "US-Iran conflict / Hormuz disruption keeps energy risk elevated",
@@ -357,7 +357,7 @@
     }
   ],
   "ff_calendar": {
-    "fetched_at": "2026-10-19 07:56 UTC",
+    "fetched_at": "2026-10-19 07:59 UTC",
     "source": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
     "events": [
       {
@@ -1211,23 +1211,23 @@
     "failures": [],
     "forexfactory": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
+      "at": "2026-10-19 07:59 UTC",
       "info": "86 events"
     },
     "treasury": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
+      "at": "2026-10-19 07:59 UTC",
       "info": "10Y 5.09 real 2.74 as of 2026-10-16"
     },
     "bls": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
+      "at": "2026-10-19 07:59 UTC",
       "info": "CPI (2026, 9) y/y 3.7 \u00b7 NFP (2026, 9) 29k"
     },
     "cnbc": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
-      "info": "DXY 102.03 Brent 107.02 WTI 99.50"
+      "at": "2026-10-19 07:59 UTC",
+      "info": "DXY 102.078 Brent 107.17 WTI 99.51"
     },
     "manual": {
       "policy": {
@@ -1248,38 +1248,38 @@
     },
     "cot_disagg": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
+      "at": "2026-10-19 07:59 UTC",
       "info": "gold 2026-10-13 swap net -224094 mm net 107089"
     },
     "cot_tff": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
+      "at": "2026-10-19 07:59 UTC",
       "info": "8 markets, last 2026-10-13"
     },
     "bank_participation": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
+      "at": "2026-10-19 07:59 UTC",
       "info": "2026-10-06 26 banks L 20801 S 212816"
     },
     "market_hist": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
+      "at": "2026-10-19 07:59 UTC",
       "info": "9 series, gold to 2026-10-16"
     },
     "real_hist": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
+      "at": "2026-10-19 07:59 UTC",
       "info": "53 days to 2026-10-16"
     },
     "news": {
       "ok": true,
-      "at": "2026-10-19 07:56 UTC",
-      "info": "219 fetched, 222 kept"
+      "at": "2026-10-19 07:59 UTC",
+      "info": "220 fetched, 225 kept"
     }
   },
   "us_actuals": {
     "source": "BLS public API v1",
-    "fetched_at": "2026-10-19 07:56 UTC",
+    "fetched_at": "2026-10-19 07:59 UTC",
     "items": [
       {
         "re": "^CPI y/y",
@@ -1402,7 +1402,7 @@
       "market": "GOLD - COMEX (088691)",
       "report": "CFTC Disaggregated, futures only (dataset 72hh-3qpy)",
       "note": "Positions as of Tuesday, published Friday 3:30pm ET. [long, short] contracts (100 oz).",
-      "fetched_at": "2026-10-19 07:56 UTC",
+      "fetched_at": "2026-10-19 07:59 UTC",
       "weeks": [
         {
           "date": "2026-04-21",
@@ -2032,7 +2032,7 @@
     },
     "fx_tff": {
       "report": "CFTC Traders in Financial Futures, futures only (dataset gpe5-46if)",
-      "fetched_at": "2026-10-19 07:56 UTC",
+      "fetched_at": "2026-10-19 07:59 UTC",
       "ccy": {
         "USD": [
           {
@@ -3719,7 +3719,7 @@
     },
     "bank_participation": {
       "market": "CMX GOLD",
-      "fetched_at": "2026-10-19 07:56 UTC",
+      "fetched_at": "2026-10-19 07:59 UTC",
       "latest": {
         "report_date": "2026-10-06",
         "us": {
@@ -3777,7 +3777,7 @@
   },
   "market_hist": {
     "source": "CNBC chart feed daily closes (unofficial); yields in %",
-    "fetched_at": "2026-10-19 07:56 UTC",
+    "fetched_at": "2026-10-19 07:59 UTC",
     "series": {
       "XAU": [
         [
@@ -4072,7 +4072,7 @@
         ],
         [
           "2026-07-15",
-          100.499
+          100.485
         ],
         [
           "2026-07-16",
@@ -6535,7 +6535,7 @@
     "missing": []
   },
   "news_archive": {
-    "fetched_at": "2026-10-19 07:56 UTC",
+    "fetched_at": "2026-10-19 07:59 UTC",
     "items": [
       {
         "t": "2026-10-19T07:47+00:00",
@@ -6698,6 +6698,12 @@
         "title": "Gold gains ground above $4,150 as Fed avoids policy signals, geopolitical risks stay in focus",
         "src": "FXStreet (rss2json)",
         "link": "https://www.fxstreet.com/news/gold-gains-ground-above-4-150-as-fed-avoids-policy-signals-geopolitical-risks-stay-in-focus-202610190129"
+      },
+      {
+        "t": "2026-10-18T23:18+00:00",
+        "title": "Gold Price October 19 2026",
+        "src": "Robinhood (via Google News)",
+        "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNWV83NWowNzNNT1BlNVJOdVM5ajFsWEl0X2t0Um9xc1VsWlV1amtrSklPajBhYmdlVFhZZFcwcXZGeGJNYkhoQ3RqajRQb1B2WUlUelJsX1dSNzNGaVAySzl4M0J3cW5pZlA1cWE5N3l1TmJ3TXBma0R2RlF4SXVqMHgyZnpXcmxSSG54SUpfUEFpSmhVeUotOTFqa2FtbGVtOHc?oc=5"
       },
       {
         "t": "2026-10-18T04:06+00:00",
@@ -7010,6 +7016,12 @@
         "title": "Gold price hits $4,154/oz after retail sales rise 0.8% in September",
         "src": "Kitco (via Google News)",
         "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNSzJydjFVd3cyVVlFcGJMUnhPVVRZcXlCbnJjSUtsay1PR01IV0EySVZ4SmNxMVdXWVhteUY2VlhORmFHOXpJcGtsMTZIa0tmWkp4YkZSVEZaM1VPSTlnaFA3UHFQUGd6TWxuV09XcmV2bDBzd3M4a0NVUGVSYVVwckh5a1JPT2EzWWJWQU9oN1Y0bkNXU3BPZ1J3RFVqSHBRQ19uR0NDeHA?oc=5"
+      },
+      {
+        "t": "2026-10-15T07:00+00:00",
+        "title": "Gold slips towards $4,102 as hotter US inflation lifts dollar and Treasury yields",
+        "src": "VT Markets (via Google News)",
+        "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOMnBEQkxJYmRWYU9sOC1PMGFEeHBtemJmbk5nREM4S1FqeGRLaDlxVkRoMDRoZGhjU3hubmZOc1M2MnM3SVVNeXdOYWVxUzlEZmxsM0tFNjY3SnRyUV9ZeUY5aUt2UUJiSkc4ZUVhRHdtWldnOENCV1FNQVMyOVNLX0NsamxxTjN1WXFsUkZGVjBnUGJIRjh3dk12b0FPM0w1RnNqem1JNnJkTnc3NlRVWndzekx3amFiNGZF?oc=5"
       },
       {
         "t": "2026-10-15T04:01+00:00",
@@ -7486,6 +7498,12 @@
         "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQOWdIT3FRNjd1TVh0RGZQMDVucDB1X1ZmZDVuX1hXN1J1cXJXT2hQQldEMkNGWDFNZkJlOWZ2RVE3bVpTSjhsNUZpU0FGUFd1aFkybTBDT0ktWHo2ZTBZQkY5a25ibVBrRHo5eFRuaFM2ZFY3dlExRTAzSGt0aTJsZTBiellMM1pNVk9wdVY5dHl3b0RSRWx5WkwxRzVZcnk5ejlTdHdHakdJRmNYdFUxcnIzam01UQ?oc=5"
       },
       {
+        "t": "2026-10-08T08:25+00:00",
+        "title": "US Dollar Index Price Forecast: Hawkish Fed bets build case for more upside towards 102.85",
+        "src": "www.tmgm.com (via Google News)",
+        "link": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxObnp4M3NMZzVjOF9NcDZJYl81R3h5WXpQUlhjeTJodnBuMzJKOUxvek5kOE9qeVZtOXhfMENXVmVIbW1BRGt2al9iVnpEU0dvMUwzajVqNlBkd0NIME85dENYVUxpcHNnR0xwUkRjQmd0STJmNTBTSTdJSGVhOWpjcTNDZnRjcGNCOWc3SlU5YjR6ejkyLUdaVkV0N3ltOE5COWlENG5SN2JFZmkta29mQS1IT0FoY2RiYkI5MEh1V2Jhaml4TWs3eWo2RURwczRSdDc4UUlnazVWU1VWdDBONHFscVlTZVpCcVhSa2dB?oc=5"
+      },
+      {
         "t": "2026-10-08T07:00+00:00",
         "title": "Current price of gold as of October 8, 2026",
         "src": "Fortune (via Google News)",
@@ -7540,6 +7558,12 @@
         "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPdS1nVXhKWjBZX2RjS1VEdExfQ0cyb1NzS1ZqeF81V1JRX1JxcjdCNFp4Vm54MDhfZFpra1A4STlESlVMSzc3VE9za19pcnBoanliVjYwbTBzajRlMm5taWRmWDFOaUtmVXVURFV5M2Z2aUprOXJKNGFYSTZ4LTM4TnRPbkh4NEFKblNKV3ZwTW1JdlhVQ2o0ZHg3QkVvMDh0RzV6RHVKdE1URi1LVV9PbXJyV3JLd03SAbwBQVVfeXFMTjJDT3dSdm5nVENMUExWTWthYW5wXzRMNi03bmM0V0FaOTZUWjFNOFh5bWM3MEJaaHRDX3BpM1dGN3ZIQzZ4THA2VzRKcGxESmdQX1BjS0VTakdfOGdyTzNqMEhPWDZ0UW9vT0IxMlZ3SG1ya0xncDMtLU9vMHVYZnliUzJ3YVk1MV8zaHExbTE0dmVqbUpBY1JYNm4wbnJScE5sZzhaa21xaWlsbXRYVVVHVnMyOXN4ZnB5Slo?oc=5"
       },
       {
+        "t": "2026-10-08T04:44+00:00",
+        "title": "United States Dollar Index retreats from YTD top; eyes 102.00 as bullish bias persists",
+        "src": "www.tmgm.com (via Google News)",
+        "link": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNanB4TlRZcU1HMnRNcGx1MGtlbC14Ty1LT0FTbE5BeldIRlJiRzNlanl4MTVkWFozQnhuOWZuNnVvcW9aR0NUYS0xeXNxRFJSWURFbllvak9zMVJkYVJWWnYzMWl6c2k0ZWtmTGtmWEsyRkxUSHB2eUVvMEdRTk1FR2FPaVhBa3czUGF5amlmX1lONUtUYTN6dUZBMnpqUmR1djROWG9JMjFZSF9RSmVUc2lpa3RPZnJhWm9PNzVERVM4UXVkZkJlRDRDN0Zjamo4TGlVbk1YMjBESnhsbkJFZ3NzSjFMQXB5?oc=5"
+      },
+      {
         "t": "2026-10-08T03:50+00:00",
         "title": "Fed minutes signal further tightening as AI demand risks stoke inflation, dollar index holds firm above 102",
         "src": "VT Markets (via Google News)",
@@ -7592,12 +7616,6 @@
         "title": "Gold Slides to Two-Month Low as Dollar Strengthens and Treasury Yields Hold Near Multi-Decade Highs",
         "src": "BigGo Finance (via Google News)",
         "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE00RUZSUVJZdFpaRVZUZi1feURVamlsN3JobUpqQ25IY2FVWXRZanVDcWU2NnlzWFdQRVRkcHQ0T1RKZmQySWFUMVlQcVJ2dldLM1NqUTVHUV8wQldtbEppSl9YdGp2WHlDdVl3TnFsMDNXVHlFaGc?oc=5"
-      },
-      {
-        "t": "2026-10-07T07:00+00:00",
-        "title": "US Dollar Index Price Forecast: Hawkish Fed bets build case for more upside towards 102.85",
-        "src": "FXStreet (via Google News)",
-        "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQRVFuaWF0azBzdlhiLURSWTFKbVdsZHZ2OVdaTWVsNDFyQUQ4Nm5xVnRwYTBUdHc3d284WEVKdmxtbDZPN1N0UG5KYXV3eWpMR0FYS0R3dDVYNlRZSUsyWmY4cjZiaWhpNnQxX3IxaEZCbG1wcXM2Zk15Ty1UNFpvV0lRMDZYbjhmSTlIcXlaeWt5ZGxHSlJyVlloR2RGT0lRWWxkUGRiTThrNlFsRldLZ2dSOHNuNWh0cXhULVJFOVFjRVhWemcwTjNyZw?oc=5"
       },
       {
         "t": "2026-10-07T06:10+00:00",
@@ -7661,15 +7679,15 @@
       },
       {
         "t": "2026-10-05T07:00+00:00",
-        "title": "Gold Price Forecast: XAU/USD extends its struggle below $4,200",
-        "src": "FXStreet (via Google News)",
-        "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPNW5uOHpZSWhUX0p1UVJzU0NLdGwzVnNyUDZpcFhQbmVSSkU4ZVRiT2RhS2tjRjdYRTVtNE5MN2JSVEJKNTNhMllUSUQ1REJfc0NMdzFfN1FianUwanpZdkFkcFVBOXlRZkZYaWVndmVYenhLa0dmcXp1Q0lvMS11Um02cTdNbzJtYXlOTVd6YlhXVmFrLWl3RHlKVTJ0MG1jdjE3UF94S09Ob1U?oc=5"
-      },
-      {
-        "t": "2026-10-05T07:00+00:00",
         "title": "Current price of gold as of October 5, 2026",
         "src": "Fortune (via Google News)",
         "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5wa25ZRkNPdm9MMGR4V3VaRWhuZjBnNnRaa3hlQ18wVzQtUjZ3UERTNFpNZHVmNXNPeUU4Z2hUMkxWd1FmMk9yZHBKTUpGamhvWFZBWlZBVnVuS2d3cWZEa0tMWFJqX2dXb0xyNkZR?oc=5"
+      },
+      {
+        "t": "2026-10-05T07:00+00:00",
+        "title": "Gold Price Forecast: XAU/USD extends its struggle below $4,200",
+        "src": "FXStreet (via Google News)",
+        "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPNW5uOHpZSWhUX0p1UVJzU0NLdGwzVnNyUDZpcFhQbmVSSkU4ZVRiT2RhS2tjRjdYRTVtNE5MN2JSVEJKNTNhMllUSUQ1REJfc0NMdzFfN1FianUwanpZdkFkcFVBOXlRZkZYaWVndmVYenhLa0dmcXp1Q0lvMS11Um02cTdNbzJtYXlOTVd6YlhXVmFrLWl3RHlKVTJ0MG1jdjE3UF94S09Ob1U?oc=5"
       },
       {
         "t": "2026-10-05T07:00+00:00",
@@ -7963,7 +7981,7 @@
   ],
   "drivers": {
     "ok": true,
-    "built_at": "2026-10-19T07:56+00:00",
+    "built_at": "2026-10-19T07:59+00:00",
     "window": {
       "from": "2026-10-09",
       "to": "2026-10-16"
