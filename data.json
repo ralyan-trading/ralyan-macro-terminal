@@ -1,9 +1,9 @@
 {
   "meta": {
     "name": "Ralyan Macro Terminal",
-    "asof": "Auto-built 2026-10-19 07:59 UTC \u00b7 yields 2026-10-16 close (real 2026-10-16) \u00b7 calendar 2026-10-19 07:59 UTC",
+    "asof": "Auto-built 2026-10-19 10:12 UTC \u00b7 yields 2026-10-16 close (real 2026-10-16) \u00b7 calendar 2026-10-19 10:12 UTC",
     "disclaimer": "Educational research tool - NOT financial advice. Scores are simple transparent rules, not predictions. Verify all data before trading.",
-    "built_at": "2026-10-19T07:59:23+00:00"
+    "built_at": "2026-10-19T10:12:05+00:00"
   },
   "gold_static": {
     "fri_close": 4165.45,
@@ -66,8 +66,8 @@
       }
     ],
     "dxy_actual": {
-      "value": 102.08,
-      "chg_pct_d": 0.24,
+      "value": 101.94,
+      "chg_pct_d": 0.1,
       "asof": "2026-10-19",
       "source": "CNBC quote feed (unofficial)"
     }
@@ -280,8 +280,8 @@
     "hy_spread_bp": 323,
     "hy_chg_bp": 12,
     "asof": "2026-10-15",
-    "brent": 107.17,
-    "wti": 99.51,
+    "brent": 108.57,
+    "wti": 101.28,
     "oil_asof": "2026-10-19 (CNBC, front-month futures)",
     "headlines": [
       "US-Iran conflict / Hormuz disruption keeps energy risk elevated",
@@ -357,7 +357,7 @@
     }
   ],
   "ff_calendar": {
-    "fetched_at": "2026-10-19 07:59 UTC",
+    "fetched_at": "2026-10-19 10:12 UTC",
     "source": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
     "events": [
       {
@@ -463,14 +463,6 @@
         "impact": "Low",
         "forecast": "-0.3%",
         "previous": "0.4%"
-      },
-      {
-        "title": "Foreign Direct Investment ytd/y",
-        "country": "CNY",
-        "date": "2026-10-19T05:10:00-04:00",
-        "impact": "Low",
-        "forecast": "",
-        "previous": "-5.3%"
       },
       {
         "title": "CPI m/m",
@@ -599,6 +591,14 @@
         "impact": "Low",
         "forecast": "23.6",
         "previous": "25.8"
+      },
+      {
+        "title": "Foreign Direct Investment ytd/y",
+        "country": "CNY",
+        "date": "2026-10-20T05:10:00-04:00",
+        "impact": "Low",
+        "forecast": "",
+        "previous": "-5.3%"
       },
       {
         "title": "10-y Bond Auction",
@@ -1211,23 +1211,23 @@
     "failures": [],
     "forexfactory": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
+      "at": "2026-10-19 10:12 UTC",
       "info": "86 events"
     },
     "treasury": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
+      "at": "2026-10-19 10:12 UTC",
       "info": "10Y 5.09 real 2.74 as of 2026-10-16"
     },
     "bls": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
+      "at": "2026-10-19 10:12 UTC",
       "info": "CPI (2026, 9) y/y 3.7 \u00b7 NFP (2026, 9) 29k"
     },
     "cnbc": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
-      "info": "DXY 102.078 Brent 107.17 WTI 99.51"
+      "at": "2026-10-19 10:12 UTC",
+      "info": "DXY 101.942 Brent 108.57 WTI 101.28"
     },
     "manual": {
       "policy": {
@@ -1248,38 +1248,38 @@
     },
     "cot_disagg": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
+      "at": "2026-10-19 10:12 UTC",
       "info": "gold 2026-10-13 swap net -224094 mm net 107089"
     },
     "cot_tff": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
+      "at": "2026-10-19 10:12 UTC",
       "info": "8 markets, last 2026-10-13"
     },
     "bank_participation": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
+      "at": "2026-10-19 10:12 UTC",
       "info": "2026-10-06 26 banks L 20801 S 212816"
     },
     "market_hist": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
+      "at": "2026-10-19 10:12 UTC",
       "info": "9 series, gold to 2026-10-16"
     },
     "real_hist": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
+      "at": "2026-10-19 10:12 UTC",
       "info": "53 days to 2026-10-16"
     },
     "news": {
       "ok": true,
-      "at": "2026-10-19 07:59 UTC",
-      "info": "220 fetched, 225 kept"
+      "at": "2026-10-19 10:12 UTC",
+      "info": "209 fetched, 232 kept (failed: ['rss2json: HTTP Error 422: Unprocessable Entity'])"
     }
   },
   "us_actuals": {
     "source": "BLS public API v1",
-    "fetched_at": "2026-10-19 07:59 UTC",
+    "fetched_at": "2026-10-19 10:12 UTC",
     "items": [
       {
         "re": "^CPI y/y",
@@ -1402,7 +1402,7 @@
       "market": "GOLD - COMEX (088691)",
       "report": "CFTC Disaggregated, futures only (dataset 72hh-3qpy)",
       "note": "Positions as of Tuesday, published Friday 3:30pm ET. [long, short] contracts (100 oz).",
-      "fetched_at": "2026-10-19 07:59 UTC",
+      "fetched_at": "2026-10-19 10:12 UTC",
       "weeks": [
         {
           "date": "2026-04-21",
@@ -2032,7 +2032,7 @@
     },
     "fx_tff": {
       "report": "CFTC Traders in Financial Futures, futures only (dataset gpe5-46if)",
-      "fetched_at": "2026-10-19 07:59 UTC",
+      "fetched_at": "2026-10-19 10:12 UTC",
       "ccy": {
         "USD": [
           {
@@ -3719,7 +3719,7 @@
     },
     "bank_participation": {
       "market": "CMX GOLD",
-      "fetched_at": "2026-10-19 07:59 UTC",
+      "fetched_at": "2026-10-19 10:12 UTC",
       "latest": {
         "report_date": "2026-10-06",
         "us": {
@@ -3777,7 +3777,7 @@
   },
   "market_hist": {
     "source": "CNBC chart feed daily closes (unofficial); yields in %",
-    "fetched_at": "2026-10-19 07:59 UTC",
+    "fetched_at": "2026-10-19 10:12 UTC",
     "series": {
       "XAU": [
         [
@@ -4470,7 +4470,7 @@
         ],
         [
           "2026-08-21",
-          4.724
+          4.732
         ],
         [
           "2026-08-24",
@@ -4748,7 +4748,7 @@
         ],
         [
           "2026-08-21",
-          4.234
+          4.225
         ],
         [
           "2026-08-24",
@@ -6535,19 +6535,61 @@
     "missing": []
   },
   "news_archive": {
-    "fetched_at": "2026-10-19 07:59 UTC",
+    "fetched_at": "2026-10-19 10:12 UTC",
     "items": [
+      {
+        "t": "2026-10-19T09:54+00:00",
+        "title": "Gold inches higher with Fed rate outlook in focus",
+        "src": "Investing.com commodities",
+        "link": "https://www.investing.com/news/commodities-news/gold-rises-as-warsh-remarks-curb-fed-hike-bets-4956185"
+      },
+      {
+        "t": "2026-10-19T09:47+00:00",
+        "title": "Dollar holds steady as French unrest weighs on Euro",
+        "src": "Investing.com forex",
+        "link": "https://www.investing.com/news/forex-news/asia-fx-ticks-higher-yuan-hits-4yr-high-after-china-q3-gdp-beat-4956302"
+      },
+      {
+        "t": "2026-10-19T09:38+00:00",
+        "title": "Oil prices dip as Trump waives Russia sanctions",
+        "src": "Investing.com commodities",
+        "link": "https://www.investing.com/news/commodities-news/oil-prices-slide-as-trump-waives-russia-sanctions-4956158"
+      },
+      {
+        "t": "2026-10-19T08:36+00:00",
+        "title": "European gas pauses near 2022 highs; Lagarde warns on energy price pass-through",
+        "src": "Investing.com commodities",
+        "link": "https://www.investing.com/news/commodities-news/european-gas-pauses-near-2022-highs-lagarde-warns-on-energy-price-passthrough-4956476"
+      },
+      {
+        "t": "2026-10-19T08:24+00:00",
+        "title": "Sterling today: Pound edges lower; AI jitters cloud dollar outlook",
+        "src": "Investing.com forex",
+        "link": "https://www.investing.com/news/forex-news/sterling-today-pound-edges-lower-ai-jitters-cloud-dollar-outlook-4956619"
+      },
+      {
+        "t": "2026-10-19T08:24+00:00",
+        "title": "Euro drops amid high energy prices and street riots in France",
+        "src": "Investing.com forex",
+        "link": "https://www.investing.com/news/forex-news/dollar-firmer-euro-weakens-as-french-protests-turn-violent-4956196"
+      },
+      {
+        "t": "2026-10-19T08:00+00:00",
+        "title": "World Food Programme cuts aid to 500,000 Palestinians in Gaza, citing funding shortages",
+        "src": "Investing.com commodities",
+        "link": "https://www.investing.com/news/commodities-news/world-food-programme-cuts-aid-to-500000-palestinians-in-gaza-citing-funding-shortages-4956520"
+      },
+      {
+        "t": "2026-10-19T07:47+00:00",
+        "title": "Eurozone yields firm as French unrest widens spread risk",
+        "src": "Investing.com forex",
+        "link": "https://www.investing.com/news/forex-news/eurozone-yields-firm-as-french-unrest-widens-spread-risk-4956418"
+      },
       {
         "t": "2026-10-19T07:47+00:00",
         "title": "Why Is the Gold Price Falling Even as ETF Investors and Central Banks Pile In?",
         "src": "Morningstar (via Google News)",
         "link": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOQmp4WURLUERsZW9SejRzNVBmTjJvdUE0ZGNjNUxZRjlkOGRTckJJbmFpRHFLU1ZfOUZ4WVFqcXJIdHZHNU5GX05yQ3Rod3FiTFplbUUwMjdoWFlJWTlFYkxNWHhnRlYwSVdlT2l3U0VUbU5vc1hhX013WjlLR2dKaWdQdi1NVmI1MjNaeHBXNHhwTEdYcTBSUDBOOHNjdlVFN2xyaGZMRXE4bmlt?oc=5"
-      },
-      {
-        "t": "2026-10-19T07:30+00:00",
-        "title": "World Food Programme cuts aid to 500,000 Palestinians in Gaza, citing funding shortages",
-        "src": "Investing.com commodities",
-        "link": "https://www.investing.com/news/commodities-news/world-food-programme-cuts-aid-to-500000-palestinians-in-gaza-citing-funding-shortages-4956520"
       },
       {
         "t": "2026-10-19T07:17+00:00",
@@ -7007,15 +7049,15 @@
       },
       {
         "t": "2026-10-15T09:35+00:00",
-        "title": "Gold price near session high after Philly Fed survey falls to 20.9 in October",
-        "src": "Kitco (via Google News)",
-        "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNZjJZdmctWU5HR3pCUHdYQkQycjNvMk5lbC1oQmRJUFgxRjM1UE9UMGgwTGs0YURGZTIxRGhkd1REMUF0X21zd0N6bWNwbUtNWHk2eWk2Y2JVUXBUOWVwbXJNMUl4Y1dmM3FYc0hXdk0xVTR6b3lrUTB3Q1VTR1NMdFNpYUpIZkh6Wm9xTGZzRjB6dG5GaC14THN5ZUpRNjRUS3dMSkhZS0VkWWZKclFmdE1sLVh0RjA?oc=5"
-      },
-      {
-        "t": "2026-10-15T09:35+00:00",
         "title": "Gold price hits $4,154/oz after retail sales rise 0.8% in September",
         "src": "Kitco (via Google News)",
         "link": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNSzJydjFVd3cyVVlFcGJMUnhPVVRZcXlCbnJjSUtsay1PR01IV0EySVZ4SmNxMVdXWVhteUY2VlhORmFHOXpJcGtsMTZIa0tmWkp4YkZSVEZaM1VPSTlnaFA3UHFQUGd6TWxuV09XcmV2bDBzd3M4a0NVUGVSYVVwckh5a1JPT2EzWWJWQU9oN1Y0bkNXU3BPZ1J3RFVqSHBRQ19uR0NDeHA?oc=5"
+      },
+      {
+        "t": "2026-10-15T09:35+00:00",
+        "title": "Gold price near session high after Philly Fed survey falls to 20.9 in October",
+        "src": "Kitco (via Google News)",
+        "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNZjJZdmctWU5HR3pCUHdYQkQycjNvMk5lbC1oQmRJUFgxRjM1UE9UMGgwTGs0YURGZTIxRGhkd1REMUF0X21zd0N6bWNwbUtNWHk2eWk2Y2JVUXBUOWVwbXJNMUl4Y1dmM3FYc0hXdk0xVTR6b3lrUTB3Q1VTR1NMdFNpYUpIZkh6Wm9xTGZzRjB6dG5GaC14THN5ZUpRNjRUS3dMSkhZS0VkWWZKclFmdE1sLVh0RjA?oc=5"
       },
       {
         "t": "2026-10-15T07:00+00:00",
@@ -7888,7 +7930,9 @@
         "link": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPeXgyQW1yZHI2ZUdaZG92N0YyRXRtdDlfWTJKcXlRZDJzOTBYRHRRYS1rV01WVHE0Z2Jnd2E5M2lBNTVIdlRaWm9QTnp2anZpUzFBQ211SUFNUDQwRHlkeHNFUjJROUk3ZWpDSmJSVkJfRm9hNTd1dnR5LVZXZldSS0JoQVhBMVozckNXNUtienNIcmZsbW5pYWZDLUIxVGhGVW1paUdoTUstZw?oc=5"
       }
     ],
-    "missing": [],
+    "missing": [
+      "rss2json: HTTP Error 422: Unprocessable Entity"
+    ],
     "sources": [
       "Google News: gold",
       "Google News: Fed/dollar",
@@ -7981,7 +8025,7 @@
   ],
   "drivers": {
     "ok": true,
-    "built_at": "2026-10-19T07:59+00:00",
+    "built_at": "2026-10-19T10:12+00:00",
     "window": {
       "from": "2026-10-09",
       "to": "2026-10-16"
