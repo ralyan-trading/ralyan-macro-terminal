@@ -28,27 +28,32 @@ const dur = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)), d = Math.flo
 
 const st = { gold: null, silver: null, paxg: null, btc: null, q: null, kr: null, tsy: null, xau: { H: null, D: null }, px: { H: null, D: null },
   fx: null, fxLatest: null, cot: null, news: null, feeds: {}, tab: "all",
-  chartTf: localStorage.getItem("rezan_tf") || "4H", chartSrc: localStorage.getItem("rezan_src") || "XAU", smcOn: localStorage.getItem("rezan_smc") !== "0", swingLen: +(localStorage.getItem("rezan_sl") || 5),
+  chartTf: localStorage.getItem("rezan_tf") || "4H", chartSrc: localStorage.getItem("rezan_src") || "XAU", smcOn: localStorage.getItem("rezan_smc") !== "0", instOn: localStorage.getItem("rezan_inst") !== "0", swingLen: +(localStorage.getItem("rezan_sl") || 5),
   last: {}, smc: {} };
 
 /* ------------------------------------------------------------ module registry */
 const MODULES = [
   { id: "fund", grp: "DECISION", title: "GOLD FUNDAMENTALS · TODAY", tag: "live", tabs: "gold macro", span: "s2", feeds: ["gold", "quotes", "tsy"] },
+  { id: "drivers", grp: "DECISION", title: "WHY IS GOLD MOVING · MARKET DRIVERS", tag: "live", tabs: "gold macro fx", span: "s4", feeds: ["quotes", "gold"] },
   { id: "conf", grp: "DECISION", title: "CONFLUENCE · TECHNICAL + FUNDAMENTAL", tag: "live", tabs: "gold", span: "s2", feeds: ["xauD", "xauH", "gold", "fx", "cot"] },
   { id: "brief", grp: "DECISION", title: "DAILY BRIEF (RULE-BASED)", tag: "live", tabs: "gold fx", span: "s2", feeds: ["gold", "quotes", "fx", "cot"] },
   { id: "score", grp: "DECISION", title: "GOLD SCORECARD · XAU/USD", tag: "live", tabs: "gold", span: "s2", feeds: ["xauD", "fx", "cot", "tsy"] },
   { id: "chart", grp: "CHARTS", title: "GOLD CHART · SMC OVERLAY", tag: "live", tabs: "gold", span: "s4", feeds: ["xauH", "xauD"] },
+  { id: "instob", grp: "CHARTS", title: "INSTITUTIONAL ORDER BLOCKS · GOLD", tag: "live", tabs: "gold flow", span: "s4", feeds: ["xauH", "xauD"] },
   { id: "playbook", grp: "DECISION", title: "TRADE PLAYBOOK (EDUCATIONAL)", tag: "live", tabs: "gold fx", span: "s2", feeds: ["fx", "quotes", "cot"] },
   { id: "strength", grp: "FX", title: "CURRENCY STRENGTH · 8 MAJORS", tag: "live", tabs: "fx", span: "s2", feeds: ["quotes", "fx", "cot"] },
   { id: "heatmap", grp: "FX", title: "28-PAIR HEATMAP", tag: "live", tabs: "fx", span: "s2", feeds: ["quotes", "fx", "cot"] },
   { id: "markets", grp: "RATES & MACRO", title: "CROSS-ASSET MONITOR", tag: "live", tabs: "macro gold fx", span: "s2", feeds: ["quotes", "btc"] },
   { id: "cot", grp: "POSITIONING", title: "COT POSITIONING · CFTC NON-COMMERCIAL", tag: "live", tabs: "gold fx flow", span: "s4", feeds: ["cot"] },
+  { id: "inst", grp: "POSITIONING", title: "INSTITUTIONS & BANKS · CFTC POSITIONING", tag: "daily", tabs: "gold fx flow", span: "s4", daily: () => (INST.gold_disagg ? "CFTC " + INST.gold_disagg.weeks[INST.gold_disagg.weeks.length - 1].date : "n/a") },
   { id: "corr", grp: "FX", title: "INTERMARKET CORRELATION · 60D", tag: "live", tabs: "gold fx", span: "s2", feeds: ["fx", "xauD"] },
   { id: "rates", grp: "RATES & MACRO", title: "YIELDS & POLICY RATES", tag: "live", tabs: "macro gold fx", span: "s2", feeds: ["tsy", "quotes"] },
   { id: "regime", grp: "RATES & MACRO", title: "MACRO REGIME (US)", tag: "daily", tabs: "macro gold", span: "", daily: () => (D.us_actuals ? "BLS " + D.us_actuals.fetched_at : D.us_data.asof) },
   { id: "fed", grp: "RATES & MACRO", title: "FED WATCH", tag: "daily", tabs: "macro gold", span: "", daily: () => D.policy.asof },
   { id: "surprise", grp: "RATES & MACRO", title: "US DATA SURPRISES", tag: "daily", tabs: "macro gold", span: "s2", daily: () => (D.us_actuals ? "BLS " + D.us_actuals.fetched_at : D.us_data.asof) },
   { id: "calendar", grp: "CALENDAR & NEWS", title: "ECONOMIC CALENDAR", tag: "daily", tabs: "macro fx gold", span: "s2", daily: () => "FF " + (D.ff_calendar.fetched_at || "n/a") },
+  { id: "catalysts", grp: "CALENDAR & NEWS", title: "UPCOMING CATALYSTS · NEXT 7 DAYS", tag: "daily", tabs: "macro fx gold", span: "s2", daily: () => "FF " + (D.ff_calendar.fetched_at || "n/a") },
+  { id: "timeline", grp: "CALENDAR & NEWS", title: "DRIVERS TIMELINE · LAST 4 WEEKS", tag: "daily", tabs: "gold macro flow", span: "s4", daily: () => (D.drivers && D.drivers.built_at) || "n/a" },
   { id: "news", grp: "CALENDAR & NEWS", title: "NEWS WIRE", tag: "live", tabs: "flow gold fx", span: "s2", feeds: ["news"] },
   { id: "sessions", grp: "CALENDAR & NEWS", title: "SESSION CLOCK", tag: "live", tabs: "fx gold", span: "", clock: true },
   { id: "flows", grp: "POSITIONING", title: "GOLD FLOWS & RISK", tag: "daily", tabs: "gold flow", span: "", daily: () => D.flows.asof },
@@ -163,7 +168,10 @@ async function fCOT() {
   if (!Array.isArray(rows) || !rows.length) throw new Error("no COT rows");
   st.cot = rows; st.last.cot = Date.now(); return "report " + rows[rows.length - 1].report_date_as_yyyy_mm_dd.slice(0, 10);
 }
-async function fNews() { const j = await getJSON(SRC.news); if (j.status !== "ok") throw new Error("rss " + j.status); st.news = j.items || []; }
+const newsArchive = () => ((D.news_archive && D.news_archive.items) || []).map((i) => ({ title: i.title, link: i.link, pubDate: i.t.replace("T", " ").slice(0, 16), src: i.src }));
+async function fNews() { // live FXStreet via rss2json; on failure (e.g. HTTP 422) fall back to the headlines fetched server-side by build.py
+  try { const j = await getJSON(SRC.news); if (j.status !== "ok") throw new Error("rss " + j.status); st.news = (j.items || []).map((i) => Object.assign({ src: "FXStreet" }, i)); st.newsLive = true; return (j.items || []).length + " live + " + newsArchive().length + " build-time headlines"; }
+  catch (e) { st.newsLive = false; if (newsArchive().length) { st.news = []; throw new Error(e.message + " - showing " + newsArchive().length + " build-time headlines (" + ((D.news_archive || {}).fetched_at || "") + ")"); } throw e; } }
 function tsyParse(xml, keys) { const out = []; (xml.match(/<m:properties>[\s\S]*?<\/m:properties>/g) || []).forEach((e) => { const r = {}; (e.match(/<d:\w+[^>]*>[^<]*</g) || []).forEach((f) => { const m = f.match(/<d:(\w+)[^>]*>([^<]*)</); r[m[1]] = m[2]; });
   if (r.NEW_DATE) out.push(r); }); return out.sort((a, b) => (a.NEW_DATE < b.NEW_DATE ? -1 : 1)); }
 async function fTsy() {
@@ -290,6 +298,7 @@ function corr(a, b) { const n = a.length; const ma = a.reduce((x, y) => x + y, 0
 
 /* ------------------------------------------------------------ SMC engine (same logic as SMC_Elliott_Structure.mq5) */
 function atr(C, n = 14) { let s = 0, c = 0; for (let i = Math.max(1, C.length - n); i < C.length; i++) { s += Math.max(C[i].h - C[i].l, Math.abs(C[i].h - C[i - 1].c), Math.abs(C[i].l - C[i - 1].c)); c++; } return c ? s / c : 0; }
+function atrAt(C, i, n = 14) { let s = 0, c = 0; for (let j = Math.max(1, i - n + 1); j <= i; j++) { s += Math.max(C[j].h - C[j].l, Math.abs(C[j].h - C[j - 1].c), Math.abs(C[j].l - C[j - 1].c)); c++; } return c ? s / c : C[i].h - C[i].l; }
 function smc(C, L, wickBreak) {
   const n = C.length, H = C.map((x) => x.h), Lo = C.map((x) => x.l), Cl = C.map((x) => x.c), O = C.map((x) => x.o);
   const tol = atr(C) * 0.1; // equal-high/low tolerance = 10% of ATR(14) (MT5: InpEqTolerance points)
@@ -298,7 +307,7 @@ function smc(C, L, wickBreak) {
   for (let k = 0; k < n; k++) {
     // fills / mitigation / sweeps from this bar
     fvgs.forEach((f) => { if (f.filled || k <= f.i + 1) return; if (f.dir > 0 && Lo[k] <= f.bot) { f.filled = true; f.fi = k; } if (f.dir < 0 && H[k] >= f.top) { f.filled = true; f.fi = k; } });
-    obs.forEach((o) => { if (o.mit || k <= o.k) return; if (o.dir > 0 && Cl[k] < o.bot) { o.mit = true; o.mi = k; } if (o.dir < 0 && Cl[k] > o.top) { o.mit = true; o.mi = k; } });
+    obs.forEach((o) => { if (o.mit || k <= o.k) return; if (o.touched == null && (o.dir > 0 ? Lo[k] <= o.top : H[k] >= o.bot)) o.touched = k; if (o.dir > 0 && Cl[k] < o.bot) { o.mit = true; o.mi = k; } if (o.dir < 0 && Cl[k] > o.top) { o.mit = true; o.mi = k; } });
     eqs.forEach((e) => { if (e.end != null || k <= e.k) return;
       if (e.t === "H" && H[k] > e.p) { e.end = k; e.swept = Cl[k] < e.p; } if (e.t === "L" && Lo[k] < e.p) { e.end = k; e.swept = Cl[k] > e.p; } });
     // FVG (3-candle imbalance, middle candle k-1)
@@ -326,6 +335,11 @@ function smc(C, L, wickBreak) {
       for (let j = m; j >= Math.max(0, m - 3 * L); j--) if (Cl[j] > O[j]) { obs.push({ i: j, k, top: H[j], bot: Lo[j], dir: -1, mit: false }); break; }
       legs.push({ dir: -1, a: m, k }); }
   }
+  // institutional-grade OBs: displacement >= 1.5x ATR(14) within 3 bars after the OB candle (the leg that broke structure); grade A = >= 2x and left an FVG
+  obs.forEach((o) => { const a = atrAt(C, o.i); if (!(a > 0)) { o.disp = 0; o.inst = false; return; } const j1 = Math.min(n - 1, o.i + 3); let ext = o.dir > 0 ? -Infinity : Infinity;
+    for (let j = o.i + 1; j <= j1; j++) ext = o.dir > 0 ? Math.max(ext, H[j]) : Math.min(ext, Lo[j]);
+    o.disp = Math.max(0, o.dir > 0 ? (ext - H[o.i]) / a : (Lo[o.i] - ext) / a); // how far price displaced beyond the OB candle, in ATRs
+    o.fvg = fvgs.some((f) => f.dir === o.dir && f.i > o.i && f.i <= Math.min(o.k, o.i + 3)); o.inst = o.disp >= 1.5; o.grade = o.disp >= 2 && o.fvg ? "A" : "B"; });
   // Fib on the latest leg: anchor at leg start -> extreme since then
   let fib = null; const leg = legs[legs.length - 1];
   if (leg) { let e = leg.a; for (let j = leg.a; j < n; j++) { if (leg.dir > 0 ? H[j] > H[e] : Lo[j] < Lo[e]) e = j; }
@@ -467,7 +481,7 @@ function rChart() {
   if ((!C || C.length < 30) && src === "XAU") { const C2 = candlesFor("PAXG", tf); if (C2 && C2.length >= 30) { C = C2; src = "PAXG"; note = "XAU chart feed unavailable → PAXG fallback. "; } }
   const B = (k, v, lab, on) => `<button class="btn ghost sm ${on ? "on" : ""}" data-${k}="${v}">${lab}</button>`;
   const ctl = `<div class="ctl"><span class="grp2">${["1H", "4H", "1D"].map((t) => B("tf", t, t, tf === t)).join("")}</span><span class="grp2">${B("src", "XAU", "XAU SPOT", st.chartSrc === "XAU")}${B("src", "PAXG", "PAXG 24/7", st.chartSrc === "PAXG")}</span>
-    <span class="grp2">${B("smc", st.smcOn ? 0 : 1, "SMC " + (st.smcOn ? "ON" : "OFF"), st.smcOn)}</span><span class="grp2"><span class="dim">SWING</span>${[3, 5, 8].map((n) => B("sl", n, n, st.swingLen === n)).join("")}</span></div>`;
+    <span class="grp2">${B("smc", st.smcOn ? 0 : 1, "SMC " + (st.smcOn ? "ON" : "OFF"), st.smcOn)}${B("inst", st.instOn ? 0 : 1, "INST OB " + (st.instOn ? "ON" : "OFF"), st.instOn)}</span><span class="grp2"><span class="dim">SWING</span>${[3, 5, 8].map((n) => B("sl", n, n, st.swingLen === n)).join("")}</span></div>`;
   if (!C || C.length < 30) { el.innerHTML = ctl + `<span class="dn">Candles unavailable for ${tf}.</span>`; bindChart(el); return; }
   const SM = st.smcOn ? smc(C, st.swingLen, false) : null;
   const narrow = el.clientWidth > 0 && el.clientWidth < 640; // phones: fewer candles, taller canvas
@@ -487,8 +501,15 @@ function rChart() {
     // Fib OTE zone (drawn first, under candles)
     const F = SM.fib; if (F) { const o1 = F.levels[2].p, o2 = F.levels[4].p; s += `<rect x="${X(F.a).toFixed(1)}" y="${Y(Math.max(o1, o2)).toFixed(1)}" width="${(xr - X(F.a)).toFixed(1)}" height="${Math.abs(Y(o1) - Y(o2)).toFixed(1)}" fill="rgba(74,163,255,.10)"/>`; }
     const pick = (arr, f, n) => arr.filter(f).slice(-n);
-    pick(SM.obs, (o) => !o.mit && o.dir > 0 && inY(o.top), 2).forEach((o) => (s += box(o.i, o.top, o.bot, "rgba(25,195,125,.16)", "#19c37d", "BULL OB")));
-    pick(SM.obs, (o) => !o.mit && o.dir < 0 && inY(o.bot), 2).forEach((o) => (s += box(o.i, o.top, o.bot, "rgba(255,77,94,.16)", "#ff4d5e", "BEAR OB")));
+    pick(SM.obs, (o) => !o.mit && !(st.instOn && o.inst) && o.dir > 0 && inY(o.top), 2).forEach((o) => (s += box(o.i, o.top, o.bot, "rgba(25,195,125,.16)", "#19c37d", "BULL OB")));
+    pick(SM.obs, (o) => !o.mit && !(st.instOn && o.inst) && o.dir < 0 && inY(o.bot), 2).forEach((o) => (s += box(o.i, o.top, o.bot, "rgba(255,77,94,.16)", "#ff4d5e", "BEAR OB")));
+    if (st.instOn) { const ib = (o, faded) => { const x0 = X(o.i), y0 = Y(o.top), y1 = Y(o.bot), col = o.dir > 0 ? "#00d1b2" : "#ff5ab4", cf = cotConfl(o.dir);
+        const lab = `INST OB ${o.dir > 0 ? "▲" : "▼"} ${o.grade} · ${o.mit ? "broken" : o.touched ? "tested" : "fresh"}${cf.ok ? " · COT✓" : ""}`;
+        return `<g opacity="${faded ? 0.45 : 1}"><title>Institutional-style order block (price-action zone, not bank order data). Displacement ${o.disp.toFixed(1)}x ATR${o.fvg ? " + FVG" : ""}. ${cf.txt}</title><rect x="${x0.toFixed(1)}" y="${y0.toFixed(1)}" width="${(xr - x0).toFixed(1)}" height="${Math.max(2, y1 - y0).toFixed(1)}" fill="${o.dir > 0 ? "rgba(0,209,178,.13)" : "rgba(255,90,180,.13)"}" stroke="${col}" stroke-width="1.6" stroke-dasharray="6 3"/>` +
+          txt(x0 + 3, place(x0 + 3, o.dir > 0 ? y1 - 3 : y0 + 10), lab, col, "start", 9, 700) + `</g>`; };
+      pick(SM.obs, (o) => o.inst && !o.mit && o.dir > 0 && inY(o.top), 2).forEach((o) => (s += ib(o)));
+      pick(SM.obs, (o) => o.inst && !o.mit && o.dir < 0 && inY(o.bot), 2).forEach((o) => (s += ib(o)));
+      pick(SM.obs, (o) => o.inst && o.mit && o.mi >= off && inY(o.top) && inY(o.bot), 1).forEach((o) => (s += ib(o, true))); }
     pick(SM.fvgs, (f) => !f.filled && f.dir > 0 && f.i >= off && inY(f.top), 2).forEach((f) => (s += box(f.i, f.top, f.bot, "rgba(255,211,77,.10)", "#d9b23a", "FVG↑")));
     pick(SM.fvgs, (f) => !f.filled && f.dir < 0 && f.i >= off && inY(f.bot), 2).forEach((f) => (s += box(f.i, f.top, f.bot, "rgba(186,104,255,.12)", "#b07cff", "FVG↓")));
   }
@@ -522,7 +543,7 @@ function rChart() {
   if (SM) { const F = SM.fib, lb = SM.lb, ob = SM.obs.filter((o) => !o.mit).slice(-1)[0], fv = SM.fvgs.filter((f) => !f.filled).slice(-1)[0], eq = SM.eqs.filter((e) => e.end == null).slice(-2);
     sum = `<div class="smcsum"><span class="pill ${cls(SM.bias)}">SMC BIAS ${tf} ${sgn(SM.bias, 0)}/3</span><span>Structure: <b class="${lb ? cls(lb.dir) : ""}">${lb ? `${lb.kind} ${lb.dir > 0 ? "bullish" : "bearish"} @ ${fx(lb.p, 1)}` : "no break yet"}</b></span>
       <span>Leg: ${F ? `${F.dir > 0 ? "up" : "down"} ${fx(F.lo, 1)} → ${fx(F.hi, 1)} · price in <b>${SM.loc}</b>${SM.inOTE ? ' · <b class="or">inside OTE 0.618–0.786</b>' : ""}` : "n/a"}</span>
-      <span>Latest OB: ${ob ? `${ob.dir > 0 ? "bull" : "bear"} ${fx(ob.bot, 1)}–${fx(ob.top, 1)}` : "none open"}</span><span>Latest FVG: ${fv ? `${fv.dir > 0 ? "bull" : "bear"} ${fx(fv.bot, 1)}–${fx(fv.top, 1)}` : "none open"}</span>
+      <span>Inst OB: ${(() => { const io = SM.obs.filter((o) => o.inst && !o.mit).slice(-1)[0]; return io ? `${io.dir > 0 ? "bull" : "bear"} ${fx(io.bot, 1)}–${fx(io.top, 1)} (${io.grade}, ${io.touched ? "tested" : "fresh"}, ${esc(cotConfl(io.dir).ok ? "COT ✓" : "COT ✗")})` : "none open"; })()}</span><span>Latest OB: ${ob ? `${ob.dir > 0 ? "bull" : "bear"} ${fx(ob.bot, 1)}–${fx(ob.top, 1)}` : "none open"}</span><span>Latest FVG: ${fv ? `${fv.dir > 0 ? "bull" : "bear"} ${fx(fv.bot, 1)}–${fx(fv.top, 1)}` : "none open"}</span>
       <span>Liquidity: ${eq.length ? eq.map((e) => `${e.t === "H" ? "EQH" : "EQL"} ${fx(e.p, 1)}`).join(", ") : "no resting equal highs/lows"}</span>${info.length ? `<span class="dim">${esc(info.join(" · "))}</span>` : ""}</div>`; }
   const srcTxt = src === "XAU" ? "XAU/USD spot via CNBC chart feed (unofficial; 1H ~60 days, 4H = aggregated 1H, 1D ~2y; closed-market zero-range bars removed)" : "PAXG-USD (gold-backed token, Coinbase, trades 24/7; tracks spot closely but not exactly; 4H = aggregated 1H)";
   el.innerHTML = ctl + `<div class="chart">${s}</div>${sum}<div class="asof">${note}${esc(srcTxt)} · ${c.length} of ${C.length} candles shown (UTC) · <span style="color:#ffb057">━ SMA20</span> <span style="color:#4aa3ff">━ SMA50</span>${SM ? ` · swings: ${st.swingLen} bars each side, close-based breaks, EQ tolerance ${fx(SM.tol, 2)} (10% ATR14) · same rules as the MT5 indicator SMC_Elliott_Structure.mq5` : ""}</div>`;
@@ -532,6 +553,7 @@ function bindChart(el) {
   el.querySelectorAll("[data-tf]").forEach((b) => (b.onclick = () => { st.chartTf = b.dataset.tf; localStorage.setItem("rezan_tf", st.chartTf); rChart(); }));
   el.querySelectorAll("[data-src]").forEach((b) => (b.onclick = () => { st.chartSrc = b.dataset.src; localStorage.setItem("rezan_src", st.chartSrc); renderAll(); }));
   el.querySelectorAll("[data-smc]").forEach((b) => (b.onclick = () => { st.smcOn = b.dataset.smc === "1"; localStorage.setItem("rezan_smc", st.smcOn ? "1" : "0"); rChart(); }));
+  el.querySelectorAll("[data-inst]").forEach((b) => (b.onclick = () => { st.instOn = b.dataset.inst === "1"; localStorage.setItem("rezan_inst", st.instOn ? "1" : "0"); rChart(); }));
   el.querySelectorAll("[data-sl]").forEach((b) => (b.onclick = () => { st.swingLen = +b.dataset.sl; localStorage.setItem("rezan_sl", st.swingLen); renderAll(); }));
 }
 function rCorr() {
@@ -590,10 +612,12 @@ function rCalendar() {
   $("b_calendar").innerHTML = h;
 }
 function rNews() {
-  if (!st.news) { if (!st.newsRendered) $("b_news").innerHTML = `<span class="dn">News feed unavailable.</span>`; return; }
-  st.newsRendered = true; const re = /gold|xau|silver|dollar|usd|fed|warsh|yield|treasur|inflation|cpi|pce|oil|iran|eur|gbp|jpy|yen|boj|ecb|boe|rba/i;
-  let items = st.news.filter((i) => re.test(i.title)); if (items.length < 5) items = st.news;
-  $("b_news").innerHTML = `<div class="news">${items.slice(0, 10).map((i) => `<div class="n"><span class="t">${esc((i.pubDate || "").slice(5, 16))}</span><a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a></div>`).join("")}</div><div class="asof">FXStreet RSS via rss2json (UTC times), filtered for macro/FX/gold keywords.</div>`;
+  const arc = newsArchive(); if (!st.news && !arc.length) { if (!st.newsRendered) $("b_news").innerHTML = `<span class="dn">News feed unavailable.</span>`; return; }
+  st.newsRendered = true; const re = /gold|xau|bullion|silver|dollar|usd|fed|warsh|yield|treasur|inflation|cpi|pce|oil|iran|eur|gbp|jpy|yen|boj|ecb|boe|rba/i;
+  const seen = new Set(); let all = (st.news || []).concat(arc).filter((i) => { const k = String(i.title).toLowerCase().replace(/\W+/g, "").slice(0, 60); if (seen.has(k)) return false; seen.add(k); return true; }).sort((a, b) => (a.pubDate < b.pubDate ? 1 : -1));
+  let items = all.filter((i) => re.test(i.title)); if (items.length < 5) items = all;
+  const dd = (p) => { const t = Date.parse(String(p).replace(" ", "T") + "Z"); return isFinite(t) ? new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " " + hm(new Date(t)) : esc(String(p).slice(5, 16)); };
+  $("b_news").innerHTML = `<div class="news">${items.slice(0, 14).map((i) => `<div class="n"><span class="t">${dd(i.pubDate || "")}</span><a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a> <span class="dim" style="font-size:10.5px">${esc(i.src || "")}</span></div>`).join("")}</div><div class="asof">${st.newsLive ? "Live: FXStreet RSS via rss2json. " : '<span class="yl">Live FXStreet feed unavailable - </span>'}Plus headlines fetched by the daily build (Google News, Investing.com, FXStreet; build ${esc((D.news_archive || {}).fetched_at || "n/a")}). Your local time, filtered for macro/FX/gold keywords.</div>`;
 }
 const SESS = [["SYDNEY", "Australia/Sydney", 7, 16], ["TOKYO", "Asia/Tokyo", 9, 18], ["LONDON", "Europe/London", 8, 17], ["NEW YORK", "America/New_York", 8, 17]];
 function zoneParts(tz) { const p = {}; new Intl.DateTimeFormat("en-US", { timeZone: tz, hour12: false, weekday: "short", hour: "2-digit", minute: "2-digit" }).formatToParts(new Date()).forEach((x) => (p[x.type] = x.value)); return { wd: p.weekday, h: +p.hour % 24, m: +p.minute }; }
@@ -621,6 +645,8 @@ function rRules() {
   <h4>SMC OVERLAY (same logic as the MT5 indicator)</h4><ul><li>Swing high/low: bar higher/lower than N bars on each side (N = SWING 3/5/8), confirmed N bars later. HH/LH vs previous swing high, HL/LL vs previous swing low.</li>
   <li>BOS = close beyond the latest unbroken swing in the trend direction; CHoCH = first close beyond it against the prior trend.</li><li>Order block = last opposite-colour candle at/before the start of the breaking leg; removed once a close goes through it. FVG = 3-candle gap (low[k] > high[k-2] or high[k] < low[k-2]); removed when fully filled.</li>
   <li>EQH/EQL = two swings within 10% of ATR(14) with no breach between them; "$$$" = resting liquidity, "swept" = wick through and close back, "taken" = closed through.</li><li>Fib on the latest leg (leg start → extreme since): 0.5 equilibrium, OTE 0.618/0.705/0.786, extension 1.618.</li></ul>
+  <h4>INSTITUTIONAL ORDER BLOCKS (price-action, not bank order data)</h4><ul><li>Starts from a normal OB (last opposite candle before a BOS/CHoCH). It is "institutional" when, within 3 bars, price moved at least 1.5× ATR(14) beyond the OB candle. Grade A = at least 2× ATR and the move left a fair-value gap; otherwise B.</li><li>FRESH = not revisited since it formed; TESTED = price traded back into the zone; BROKEN = a close through the far side.</li><li>COT ✓ = in the latest CFTC week, swap dealers (banks) or managed money (funds) changed their net position in the same direction as the zone.</li></ul>
+  <h4>MARKET DRIVERS</h4><ul><li>Window = last 5 completed sessions. DXY ≤ −0.3% helps gold, ≥ +0.3% hurts; 10Y real and nominal yields ≤ −5bp help, ≥ +5bp hurt; S&P ≤ −1.5% or VIX ≥ +3 pts = risk-off (helps); funds' net COT change > 0 helps. Oil is shown as "mixed".</li><li>US data: actual above forecast = hawkish (USD+, gold−), except unemployment/jobless claims (reversed). Past releases: hand-entered with sources; new ones from the ForexFactory feed (archived each build) with BLS actuals.</li></ul>
   <h4>CONFLUENCE</h4><ul><li>Combined = (fundamental + technical) / 2. ALIGNED when both agree with |each| ≥ 20%; CONFLICT when they disagree with |each| ≥ 20%; otherwise MIXED.</li></ul>
   <h4>PAIRS / PLAYBOOK</h4><ul><li>Pair score = base score − quote score (±${CCY_MAX * 2}). |score| ≥ 6 STRONG, ≥ 3 normal, ≥ 1 WEAK, else NEUTRAL. Conviction tier: HIGH ≥ 6, MEDIUM ≥ 3, LOW otherwise.</li>
   <li>These are mechanical, backward-looking rules for learning. They are not forecasts and ignore risk management and event risk.</li></ul></div>`;
@@ -631,7 +657,7 @@ function rNA() {
 }
 function rFeeds() {
   const rows = Object.values(st.feeds).map((v) => `<tr><td>${esc(v.label)}${v.info ? `<br><span class="dim" style="font-size:10.5px">${esc(v.info)}</span>` : ""}</td><td class="r ${v.ok ? "up" : "dn"}">${v.ok ? "OK" : "FAILED"}</td><td class="r dim">${v.okAt ? hms(v.okAt) : "never"}</td></tr>`).join("");
-  const a = D.auto || {}, bs = ["forexfactory", "treasury", "bls", "cnbc"].map((k) => `${k}: ${a[k] ? (a[k].ok ? "ok " : "FAILED ") + (a[k].at || "") : "n/a"}`).join(" · ");
+  const a = D.auto || {}, bs = ["forexfactory", "treasury", "bls", "cnbc", "cot_disagg", "cot_tff", "bank_participation", "market_hist", "real_hist", "news"].map((k) => `${k}: ${a[k] ? (a[k].ok ? "ok " : "FAILED ") + (a[k].at || "") : "n/a"}`).join(" · ");
   $("b_feeds").innerHTML = `<div class="scroll"><table class="feeds"><tr><th>LIVE FEED (BROWSER)</th><th class="r">STATE</th><th class="r">LAST OK</th></tr>${rows}</table></div>
   <div class="asof">Daily file: ${esc(D.meta.asof)}<br>Build fetches: ${esc(bs)}<br>Refresh every 5 min (retry after 60 s on failure, and on tab focus / reconnect). ECB FX, COT & XAU daily every 30 min; Treasury curve hourly. Page reloads itself every 6 h to pick up a rebuilt daily file.</div>`;
 }
@@ -676,6 +702,142 @@ function rPlaybook(G, sc, P) {
   <tr><td class="dim">G</td><td><b>XAU/USD</b></td><td><span class="pill ${c}">${v}</span></td><td class="r ${cls(G.total)}">${sgn(G.total, 0)}/${G.max}</td><td>${tier(Math.abs((G.total / G.max) * 14))}</td><td class="dim">${esc(gTop)}</td></tr>` +
     P.slice(0, 6).map((p, i) => `<tr><td class="dim">${i + 1}</td><td><b>${p.pair}</b></td><td><span class="pill ${cls(p.score)}">${p.score > 0 ? "LONG BIAS" : p.score < 0 ? "SHORT BIAS" : "FLAT"}</span></td><td class="r ${cls(p.score)}">${sgn(p.score, 0)}</td><td>${tier(Math.abs(p.score))}</td><td class="dim">${esc(drivers(p))}</td></tr>`).join("") +
     `</table></div><div class="asof dn">EDUCATIONAL, NOT FINANCIAL ADVICE. Bias = direction implied by the mechanical scores only. Confirm with structure (chart SMC overlay), event risk and position sizing.</div>`;
+}
+
+/* ------------------------------------------------------------ v3: institutions & banks (CFTC) + institutional OBs + market drivers */
+const INST = D.institutional || {};
+const netOf = (w, k) => (w && w[k] ? w[k][0] - w[k][1] : null);
+const kfmt = (x, d = 1) => (x == null ? "n/a" : sgn(x / 1000, d) + "K");
+const kabs = (x, d = 1) => (x == null ? "n/a" : (x / 1000).toFixed(d) + "K");
+const mdy = (d) => { if (!d) return "n/a"; const t = new Date(d + "T12:00:00Z"); return t.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" }); };
+function flowLabel(L0, S0, L1, S1, who) { // plain-English: what did this group do last week
+  const dl = L1 - L0, ds = S1 - S0, dn = dl - ds; if (!isFinite(dn)) return "n/a";
+  const parts = []; if (Math.abs(dl) >= 500) parts.push(dl > 0 ? "adding longs" : "cutting longs"); if (Math.abs(ds) >= 500) parts.push(ds > 0 ? "adding shorts" : "cutting shorts");
+  return `${who} ${parts.length ? parts.join(" / ") : "little changed"}`;
+}
+function cotGold() { // last two weekly reports of the disaggregated gold report
+  const g = INST.gold_disagg; if (!g || !g.weeks || g.weeks.length < 2) return null;
+  const W = g.weeks, a = W[W.length - 2], b = W[W.length - 1], w4 = W[Math.max(0, W.length - 5)];
+  const ch = (k) => netOf(b, k) - netOf(a, k), ch4 = (k) => netOf(b, k) - netOf(w4, k);
+  return { g, W, a, b, w4, swapChg: ch("swap"), mmChg: ch("mm"), pmChg: ch("pm"), ch, ch4 };
+}
+function cotConfl(dir) { // COT confluence for an institutional OB (dir +1 bullish / -1 bearish)
+  const c = cotGold(); if (!c) return { ok: null, txt: "COT n/a" };
+  const tot = c.swapChg + c.mmChg, det = `banks ${kfmt(c.swapChg)} + funds ${kfmt(c.mmChg)} = ${kfmt(tot)} net (wk to ${mdy(c.b.date)})`;
+  return Math.sign(tot) === dir ? { ok: true, txt: `COT ✓ institutions ${dir > 0 ? "net buying" : "net selling"}: ${det}` } : { ok: false, txt: `COT ✗ ${det}` };
+}
+function spark(series, opts) { // tiny multi-line SVG; series = [{name, col, pts:[num]}], labels = dates
+  const W = opts.w || 520, H = opts.h || 130, L = 6, R = 58, T = 10, B = 18; const all = series.flatMap((s) => s.pts).filter((v) => v != null);
+  if (!all.length) return ""; let lo = Math.min(...all, 0), hi = Math.max(...all, 0); if (hi === lo) hi = lo + 1; const n = Math.max(...series.map((s) => s.pts.length));
+  const X = (i) => L + (i / Math.max(1, n - 1)) * (W - L - R), Y = (v) => T + ((hi - v) / (hi - lo)) * (H - T - B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;max-height:${H + 20}px"><line x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}" style="stroke:var(--mid)" stroke-dasharray="2 3"/>`;
+  [hi, (hi + lo) / 2, lo].forEach((v) => (s += `<text x="${W - R + 4}" y="${Y(v) + 3}" font-size="9" font-family="monospace" style="fill:var(--dim)">${(v / 1000).toFixed(0)}K</text>`));
+  series.forEach((sr) => { const p = sr.pts.map((v, i) => (v == null ? null : `${X(i).toFixed(1)},${Y(v).toFixed(1)}`)).filter(Boolean).join(" ");
+    s += `<polyline points="${p}" fill="none" stroke="${sr.col}" stroke-width="2"/>`; const lv = sr.pts[sr.pts.length - 1]; if (lv != null) s += `<circle cx="${X(sr.pts.length - 1)}" cy="${Y(lv)}" r="3" fill="${sr.col}"/>`; });
+  if (opts.labels) [0, Math.floor((n - 1) / 2), n - 1].forEach((i, j) => (s += `<text x="${X(i)}" y="${H - 4}" font-size="9" font-family="monospace" text-anchor="${j === 0 ? "start" : j === 2 ? "end" : "middle"}" style="fill:var(--dim)">${esc(mdy(opts.labels[i]))}</text>`));
+  return s + `</svg><div class="lg">${series.map((sr) => `<span><i style="background:${sr.col}"></i>${esc(sr.name)}</span>`).join("")}</div>`;
+}
+function rInst() {
+  const el = $("b_inst"), c = cotGold(); let h = "";
+  if (!c) { el.innerHTML = `<span class="dn">CFTC disaggregated gold data not in this build (n/a). It is fetched by build.py from publicreporting.cftc.gov.</span>`; return; }
+  const b = c.b, a = c.a, oi = b.oi, groups = [["swap", "Swap dealers", "banks / bullion dealers", "#4aa3ff"], ["mm", "Managed money", "hedge funds, CTAs", "#ff8a1f"], ["pm", "Producer / merchant", "miners, refiners, jewellers", "#19c37d"], ["other", "Other reportables", "other large traders", "#b07cff"], ["small", "Small traders", "non-reportable", "#6c7893"]];
+  const lab = (k) => flowLabel(a[k][0], a[k][1], b[k][0], b[k][1], "");
+  const bankTxt = `Banks (swap dealers) ${lab("swap").trim()}: net ${kfmt(c.swapChg)} to ${kabs(netOf(b, "swap"))} (they are usually net short because they hedge clients' gold buying).`;
+  const fundTxt = `Funds (managed money) ${lab("mm").trim()}: net ${kfmt(c.mmChg)} to ${kabs(netOf(b, "mm"))}.`;
+  const bias = c.mmChg + c.swapChg; const bc = bias > 0 ? "up" : bias < 0 ? "dn" : "fl";
+  h += `<div class="ibx"><div><div class="vsub">CFTC COMMITMENTS OF TRADERS · COMEX GOLD · week to Tue ${mdy(b.date)}</div>
+    <div class="verdict ${bc}" style="font-size:20px">${bias > 0 ? "INSTITUTIONS NET BUYING" : bias < 0 ? "INSTITUTIONS NET SELLING" : "NO NET CHANGE"} <span class="dim" style="font-size:12px">(banks + funds ${kfmt(bias)})</span></div>
+    <p class="pl">🏦 ${esc(bankTxt)}<br>📈 ${esc(fundTxt)}<br>Open interest ${kabs(oi, 0)} contracts (${kfmt(b.oi - a.oi)} w/w)${b.oi - a.oi > oi * 0.01 ? " - new money coming in" : b.oi - a.oi < -oi * 0.01 ? " - positions being closed" : " - roughly unchanged"}.</p></div>
+    <div>${spark([{ name: "Banks (swap) net", col: "#4aa3ff", pts: c.W.slice(-12).map((w) => netOf(w, "swap")) }, { name: "Funds (managed money) net", col: "#ff8a1f", pts: c.W.slice(-12).map((w) => netOf(w, "mm")) }], { labels: c.W.slice(-12).map((w) => w.date) })}</div></div>`;
+  h += `<div class="scroll"><table><tr><th>GROUP</th><th class="r">LONG</th><th class="r">SHORT</th><th class="r">NET</th><th class="r">W/W NET</th><th class="r">4W NET</th><th class="r">% OI L/S</th><th>LAST WEEK</th></tr>` +
+    groups.map(([k, n, d, col]) => `<tr><td><b style="color:${col}">${n}</b><br><span class="dim" style="font-size:10.5px">${d}</span></td><td class="r">${kabs(b[k][0])}</td><td class="r">${kabs(b[k][1])}</td><td class="r ${cls(netOf(b, k))}"><b>${kfmt(netOf(b, k))}</b></td>
+      <td class="r ${cls(c.ch(k))}">${kfmt(c.ch(k))}</td><td class="r ${cls(c.ch4(k))}">${kfmt(c.ch4(k))}</td><td class="r dim">${((b[k][0] / oi) * 100).toFixed(0)}/${((b[k][1] / oi) * 100).toFixed(0)}%</td><td>${esc(lab(k).trim())}</td></tr>`).join("") + `</table></div>`;
+  // weekly history table (last 8)
+  h += `<details class="hist"><summary>Weekly history (last ${Math.min(10, c.W.length)} reports)</summary><div class="scroll"><table><tr><th>REPORT (TUE)</th><th class="r">OPEN INT.</th><th class="r">BANKS NET</th><th class="r">Δ</th><th class="r">FUNDS NET</th><th class="r">Δ</th><th class="r">PRODUCERS NET</th></tr>` +
+    c.W.slice(-10).map((w, i, A) => { const p = i ? A[i - 1] : null; return `<tr><td>${w.date}</td><td class="r">${kabs(w.oi, 0)}</td><td class="r">${kfmt(netOf(w, "swap"))}</td><td class="r ${p ? cls(netOf(w, "swap") - netOf(p, "swap")) : ""}">${p ? kfmt(netOf(w, "swap") - netOf(p, "swap")) : ""}</td><td class="r">${kfmt(netOf(w, "mm"))}</td><td class="r ${p ? cls(netOf(w, "mm") - netOf(p, "mm")) : ""}">${p ? kfmt(netOf(w, "mm") - netOf(p, "mm")) : ""}</td><td class="r">${kfmt(netOf(w, "pm"))}</td></tr>`; }).reverse().join("") + `</table></div></details>`;
+  // bank participation report
+  const bp = INST.bank_participation;
+  if (bp && bp.latest) { const L = bp.latest, P = bp.previous, x = (o) => (o.long != null && o.short != null ? o.long - o.short : null);
+    const row = (n, o, po) => `<tr><td>${n}</td><td class="r">${o.banks ?? "<4 (hidden)"}</td><td class="r">${kabs(o.long)} <span class="dim">${o.long_pct}%</span></td><td class="r">${kabs(o.short)} <span class="dim">${o.short_pct}%</span></td><td class="r ${cls(x(o))}"><b>${kfmt(x(o))}</b></td><td class="r ${po ? cls(x(o) - x(po)) : ""}">${po && x(po) != null ? kfmt(x(o) - x(po)) : "n/a"}</td></tr>`;
+    h += `<div class="sub">BANK PARTICIPATION REPORT · CFTC MONTHLY · ${esc(L.report_date)}</div><div class="scroll"><table><tr><th>BANKS IN GOLD FUTURES</th><th class="r"># BANKS</th><th class="r">LONG</th><th class="r">SHORT</th><th class="r">NET</th><th class="r">VS ${P ? esc(P.report_date.slice(5)) : "PREV"}</th></tr>
+      ${row("U.S. banks", L.us, P && P.us)}${row("Non-U.S. banks", L.non_us, P && P.non_us)}${row("<b>All banks</b>", L.all, P && P.all)}</table></div>
+      <div class="asof">${esc(bp.note)} Gold futures open interest ${kabs(L.oi, 0)}. Source: <a href="${esc(L.url)}" target="_blank" rel="noopener">CFTC Bank Participation Report</a>. Long/short % = share of total open interest.</div>`;
+  } else h += `<div class="asof">Bank Participation Report: n/a in this build.</div>`;
+  // FX: traders in financial futures
+  const T = INST.fx_tff;
+  if (T && T.ccy) { const rows = Object.entries(T.ccy).filter(([, w]) => w.length >= 2);
+    h += `<div class="sub">CURRENCIES · TRADERS IN FINANCIAL FUTURES (CFTC) · week to ${esc(mdy(rows.length ? rows[0][1][rows[0][1].length - 1].date : null))}</div><div class="scroll"><table><tr><th>FUTURE</th><th class="r">BANKS (DEALER) NET</th><th class="r">W/W</th><th class="r">ASSET MGR NET</th><th class="r">W/W</th><th class="r">HEDGE FUNDS NET</th><th class="r">W/W</th><th>READ</th></tr>` +
+      rows.map(([k, w]) => { const b2 = w[w.length - 1], a2 = w[w.length - 2], d = (g) => netOf(b2, g) - netOf(a2, g); const inst = d("am") + d("lev");
+        return `<tr><td><b>${k}</b>${k === "USD" ? ' <span class="dim">(DXY fut.)</span>' : ""}</td><td class="r">${kfmt(netOf(b2, "dealer"))}</td><td class="r ${cls(d("dealer"))}">${kfmt(d("dealer"))}</td><td class="r">${kfmt(netOf(b2, "am"))}</td><td class="r ${cls(d("am"))}">${kfmt(d("am"))}</td><td class="r">${kfmt(netOf(b2, "lev"))}</td><td class="r ${cls(d("lev"))}">${kfmt(d("lev"))}</td>
+          <td><span class="pill ${cls(inst)}">${inst > 0 ? "buy-side adding" : inst < 0 ? "buy-side cutting" : "flat"}</span> <span class="dim">${esc(flowLabel(a2.dealer[0], a2.dealer[1], b2.dealer[0], b2.dealer[1], "banks"))}</span></td></tr>`; }).join("") + `</table></div>
+      <div class="asof">${esc(T.note)} "Buy-side" = asset managers + leveraged funds. Banks/dealers are usually on the other side of client trades.</div>`;
+  }
+  h += `<div class="asof">Sources: ${esc(c.g.report)}${T ? "; " + esc(T.report) : ""}. Weekly, positions as of Tuesday, published Friday. Built ${esc(c.g.fetched_at)}.<br>
+    <b>Gold ETF holdings (SPDR GLD):</b> n/a - the official holdings CSV now redirects to a PDF bar list, so there is no free machine-readable daily source; monthly WGC ETF flows are in the GOLD FLOWS card (manual).<br>
+    <b>Honest note:</b> COT shows positions of groups of traders in U.S. futures, not the full OTC/London market and not individual bank orders.</div>`;
+  el.innerHTML = h;
+}
+function instOBs(S) { const seen = new Set(); return S ? S.obs.filter((o) => { const k = o.i + ":" + o.dir; if (!o.inst || seen.has(k)) return false; seen.add(k); return true; }) : []; }
+function rInstOB() {
+  const el = $("b_instob"), gp = goldPx(); const S = st.smc || {}; let rows = [];
+  ["1D", "4H", "1H"].forEach((tf) => { const s = S[tf]; if (!s) return; instOBs(s).filter((o) => !o.mit).slice(-4).forEach((o) => rows.push({ tf, o, s })); const br = instOBs(s).filter((o) => o.mit).slice(-1)[0]; if (br) rows.push({ tf, o: br, s }); });
+  if (!rows.length) { el.innerHTML = `<span class="dim">No institutional-grade order blocks found in the loaded candles (needs XAU or PAXG candles).</span>`; return; }
+  const px = gp ? gp.px : null;
+  el.innerHTML = `<div class="scroll"><table><tr><th>TF</th><th>ZONE</th><th>TYPE</th><th class="r">DISPL.</th><th>STATUS</th><th class="r">DIST.</th><th>COT CONFLUENCE</th></tr>` +
+    rows.map(({ tf, o, s }) => { const cf = cotConfl(o.dir), dist = px ? (o.dir > 0 ? px - o.top : o.bot - px) : null, st2 = o.mit ? "BROKEN" : o.touched ? "TESTED" : "FRESH";
+      const when = s.C[o.i] ? new Date(s.C[o.i].t).toISOString().slice(0, tf === "1D" ? 10 : 16).replace("T", " ") : "";
+      return `<tr style="${o.mit ? "opacity:.5" : ""}"><td><b>${tf}</b>${s.src === "PAXG" ? '<br><span class="dim">PAXG</span>' : ""}</td><td><b>${fx(o.bot, 1)}–${fx(o.top, 1)}</b><br><span class="dim" style="font-size:10.5px">${esc(when)} UTC</span></td>
+        <td><span class="pill ${o.dir > 0 ? "up" : "dn"}">INST OB ${o.dir > 0 ? "▲ BULL" : "▼ BEAR"} ${o.grade}</span>${o.fvg ? ' <span class="dim">+FVG</span>' : ""}</td><td class="r">${o.disp.toFixed(1)}× ATR</td>
+        <td class="${o.mit ? "dn" : o.touched ? "yl" : "up"}">${st2}</td><td class="r">${dist == null ? "n/a" : (dist >= 0 ? "" : "inside ") + fx(Math.abs(dist), 1)}</td><td class="${cf.ok ? "up" : cf.ok === false ? "dim" : "dim"}" style="font-size:11px">${esc(cf.txt)}</td></tr>`; }).join("") + `</table></div>
+    <div class="asof"><b>What this is:</b> zones where price left a strong "institutional-style" footprint: the last opposite candle before a displacement move of at least 1.5× ATR(14) within 3 bars that broke structure (BOS/CHoCH). Grade A = ≥2× ATR and left a fair-value gap; B = otherwise. FRESH = not revisited, TESTED = price came back into it, BROKEN = closed through it.<br>
+    <b class="yl">These are price-action zones calculated from candles, NOT actual bank order data</b> (no free source has real bank orders). COT confluence compares the zone direction with what banks (swap dealers) and funds did in the latest CFTC week. Shown on the chart as dashed "INST OB" boxes. Educational only.</div>`;
+}
+/* --------- market drivers (why is it moving) */
+function liveDriverLine() { // today's live move from the quote feed, explained with the same rules
+  const q = st.q || {}, gp = goldPx(), ref = goldRef(); if (!gp || !st.q) return null;
+  const g = (gp.px / ref.v - 1) * 100, parts = [], help = [], hurt = [];
+  const add = (cond, txt, h) => { if (cond == null) return; parts.push(txt); if (h > 0) help.push(txt); if (h < 0) hurt.push(txt); };
+  if (q[".DXY"] && q[".DXY"].chp != null) add(true, `DXY ${sgn(q[".DXY"].chp)}%`, q[".DXY"].chp <= -0.15 ? 1 : q[".DXY"].chp >= 0.15 ? -1 : 0);
+  if (q.US10Y && q.US10Y.ch != null) add(true, `US10Y ${sgn(q.US10Y.ch * 100, 1)}bp`, q.US10Y.ch * 100 <= -3 ? 1 : q.US10Y.ch * 100 >= 3 ? -1 : 0);
+  if (q["@CL.1"] && q["@CL.1"].chp != null) add(true, `WTI ${sgn(q["@CL.1"].chp, 1)}%`, 0);
+  if (q[".SPX"] && q[".VIX"] && q[".SPX"].chp != null) add(true, `S&P ${sgn(q[".SPX"].chp, 1)}% / VIX ${sgn(q[".VIX"].chp, 1)}%`, q[".SPX"].chp <= -0.8 || q[".VIX"].chp >= 8 ? 1 : q[".SPX"].chp >= 0.8 && q[".VIX"].chp <= -5 ? -1 : 0);
+  const fits = g >= 0 ? help : hurt, against = g >= 0 ? hurt : help;
+  return { g, txt: `Gold ${sgn(g)}% vs ${ref.lbl} (${fx(gp.px)}, ${esc(gp.src)}). ${fits.length ? (g >= 0 ? "Supported by " : "Weighed on by ") + fits.join(", ") + "." : "Live macro moves don't explain it clearly (" + parts.join(", ") + ")."}${against.length ? " Against the move: " + against.join(", ") + "." : ""}` };
+}
+const effPill = (g) => `<span class="pill ${g > 0 ? "up" : g < 0 ? "dn" : "fl"}">${g > 0 ? "HELPS GOLD" : g < 0 ? "HURTS GOLD" : "MIXED"}</span>`;
+function rDrivers() {
+  const el = $("b_drivers"), Dr = D.drivers;
+  if (!Dr || !Dr.ok) { el.innerHTML = `<span class="dim">Drivers not computed in this build (${esc(((Dr && Dr.notes) || ["no data"]).join("; "))}).</span>`; return; }
+  const L = liveDriverLine(), c = Dr.gold.chg_pct;
+  el.innerHTML = `<div class="dhead"><div class="dbig ${cls(c)}">${sgn(c)}%</div><div><div class="vsub">GOLD · LAST 5 SESSIONS · ${esc(mdy(Dr.window.from))} → ${esc(mdy(Dr.window.to))} close</div><p class="pl" style="margin:4px 0 0">${esc(Dr.headline)}</p></div></div>
+  ${L ? `<div class="today"><b class="or">TODAY (LIVE):</b> ${L.txt} <span class="dim">· quotes CNBC (unofficial), refreshed every 5 min</span></div>` : ""}
+  <div class="scroll"><table><tr><th>DRIVER</th><th>EFFECT</th><th>WHAT HAPPENED &amp; WHY IT MATTERS</th><th>DATE(S)</th><th>SOURCE</th></tr>${Dr.lines.map((l) => `<tr><td><b>${esc(l.label)}</b></td><td>${effPill(l.gold)}</td><td>${esc(l.text)}</td><td class="dim" style="white-space:nowrap">${esc(l.dates)}</td><td class="dim" style="font-size:10.5px">${esc(l.src)}</td></tr>`).join("")}</table></div>
+  ${Dr.fx && Dr.fx.length ? `<div class="sub">DOLLAR &amp; MAJORS</div><div class="pl">${Dr.fx.map((x) => `• ${esc(x)}`).join("<br>")}</div>` : ""}
+  <div class="asof">${esc(Dr.method)} Built ${esc(Dr.built_at)}.${Dr.notes && Dr.notes.length ? " Missing: " + esc(Dr.notes.join("; ")) + "." : ""} Educational, not advice.</div>`;
+}
+function rTimeline() {
+  const el = $("b_timeline"), Dr = D.drivers; if (!Dr || !Dr.ok) { el.innerHTML = `<span class="dim">Timeline n/a in this build.</span>`; return; }
+  const v = (x, u, d = 2) => (x == null ? '<span class="dim">n/a</span>' : `<span class="${u === "bp" ? cls(-x) : cls(x)}">${sgn(x, u === "bp" ? 0 : d)}${u}</span>`);
+  el.innerHTML = `<div class="tl">${Dr.timeline.map((t) => `<div class="tlr ${t.notable ? "big" : ""}${t.events.length ? " ev" : ""}">
+    <div class="tld"><b>${esc(new Date(t.date + "T12:00:00Z").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }))}</b><div class="tlg ${cls(t.gold_pct)}">${sgn(t.gold_pct)}%</div><div class="dim" style="font-size:10.5px">${fx(t.gold_close)}</div>${t.notable ? '<span class="pill yl">BIG MOVE</span>' : ""}</div>
+    <div class="tlb"><div class="dim" style="font-size:11px">DXY ${v(t.dxy_pct, "%")} · US10Y ${v(t.us10y_bp, "bp")} · 10Y real ${v(t.real_bp, "bp")}</div>
+      ${t.events.map((e) => `<div class="tle">📅 <b>${esc(e.ccy)} ${esc(e.title)}</b> ${new Date(e.t).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} · actual <b>${esc(e.actual || "n/a")}</b> · fcst ${esc(e.forecast || "n/a")} · prev ${esc(e.previous || "n/a")} → <span class="${/gold\+|\+$/.test(e.interp) ? "up" : /gold−|−$/.test(e.interp) ? "dn" : "dim"}">${esc(e.interp)}</span> <span class="dim" style="font-size:10px">(${esc(e.src)})</span></div>`).join("")}
+      <div class="tlw">💡 ${esc(t.why)}</div>
+      ${t.headlines.map((n) => `<div class="tlh">📰 <a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a> <span class="dim">· ${esc(n.src)} ${esc(n.t.slice(11, 16))} UTC</span></div>`).join("")}</div></div>`).join("")}</div>
+  <div class="asof">Daily changes are close-to-close (gold/DXY/10Y: CNBC daily bars; real yield: U.S. Treasury). Events: hand-entered past US releases with sources + ForexFactory weekly feed archived by every build (free feed has no actuals; US actuals from BLS). Headlines: Google News / Investing.com / FXStreet RSS, fetched at build time. "Reacted as expected" compares the surprise direction with gold's move that day.</div>`;
+}
+function catalystRead(e) {
+  const t = e.title || "", c = e.ccy || "";
+  if (/FOMC|Fed|rate|decision|statement|BoC|RBNZ|ECB|BoJ|BoE|RBA|SNB/i.test(t)) return `Hawkish surprise → ${c.split("/")[0]}+${c.includes("USD") ? ", gold−" : ""}; dovish → ${c.split("/")[0]}−${c.includes("USD") ? ", gold+" : ""}`;
+  if (c !== "USD") return `Above forecast → ${c}+ ; below → ${c}−`;
+  return /Unemployment|Claims/i.test(t) ? "Above forecast → USD−, gold+ ; below → USD+, gold−" : "Above forecast → USD+, gold− ; below → USD−, gold+";
+}
+function rCatalysts() {
+  const now = Date.now(), ev = allEvents().filter((e) => e.t > now - 30 * 60e3 && e.t < now + 7 * 864e5 && e.imp === "High");
+  $("b_catalysts").innerHTML = ev.length ? `<div class="scroll"><table><tr><th>WHEN (LOCAL)</th><th>EVENT</th><th class="r">FCST</th><th class="r">PREV</th><th>IN</th><th>HOW IT USUALLY MOVES MARKETS</th></tr>` +
+    ev.map((e) => `<tr><td style="white-space:nowrap">${fmtLocal(e.t)}</td><td><b>${esc(e.ccy)}</b> ${esc(e.title)}${e.src === "curated" ? ' <span class="dim">(curated)</span>' : ""}</td><td class="r">${esc(e.fc || "n/a")}</td><td class="r">${esc(e.prev || "n/a")}</td><td class="r"><span class="cdv" data-cd="${e.t}">${dur(e.t - now)}</span></td><td class="dim" style="font-size:11px">${esc(catalystRead(e))}</td></tr>`).join("") +
+    `</table></div><div class="asof">High-impact only, next 7 days, your local time. ForexFactory weekly feed (build ${esc(D.ff_calendar.fetched_at || "n/a")}) + curated central-bank dates beyond this week. "Usual" reaction = textbook rule, not a prediction.</div>`
+    : `<span class="dim">No high-impact events in the next 7 days in the loaded calendar.</span>`;
 }
 
 /* ------------------------------------------------------------ alerts + sound */
@@ -741,7 +903,7 @@ function renderAll() {
   safe(() => { G = goldScore(); rScore(G); }, "score");
   safe(() => rFund(G), "fund"); safe(() => rConf(G), "conf");
   safe(() => { sc = ccyScores(); rStrength(sc); P = pairs(sc); rHeatmap(sc, P); }, "strength");
-  safe(rCOT, "cot"); safe(rChart, "chart"); safe(rMarkets, "markets"); safe(rCorr, "corr"); safe(rRates, "rates"); safe(rRegime, "regime"); safe(rFed, "fed");
+  safe(rCOT, "cot"); safe(rInst, "inst"); safe(rChart, "chart"); safe(rInstOB, "instob"); safe(rDrivers, "drivers"); safe(rTimeline, "timeline"); safe(rCatalysts, "catalysts"); safe(rMarkets, "markets"); safe(rCorr, "corr"); safe(rRates, "rates"); safe(rRegime, "regime"); safe(rFed, "fed");
   safe(rSurprise, "surprise"); safe(rCalendar, "calendar"); safe(rNews, "news"); safe(rFlows, "flows"); safe(rRules, "rules"); safe(rNA, "na_options"); safe(rFeeds, "feeds");
   if (G && sc && P) { safe(() => rBrief(G, sc, P), "brief"); safe(() => rPlaybook(G, sc, P), "playbook"); }
   safe(() => rTicker(sc), "ticker"); safe(rFresh, "feeds"); checkAlerts(P);
@@ -751,7 +913,7 @@ const JOBS = [
   ["gold", "XAU spot (gold-api.com)", fGold], ["silver", "XAG spot (gold-api.com)", fSilver], ["quotes", "Cross-asset quotes (CNBC, unofficial)", fQuotes],
   ["kraken", "FX intraday fallback (Kraken)", fKraken], ["btc", "BTC-USD (Coinbase)", fBtc], ["paxg", "PAXG spot (Coinbase)", fPaxg],
   ["xauH", "XAU 1H → 1H/4H (CNBC chart)", fXauH], ["xauD", "XAU daily (CNBC chart)", fXauD, 30], ["pxH", "PAXG 1H x600 (Coinbase)", fPxH], ["pxD", "PAXG 1D (Coinbase)", fPxD, 30],
-  ["news", "News (FXStreet/rss2json)", fNews], ["fx", "FX series (Frankfurter/ECB)", fFX, 30], ["cot", "COT (CFTC public API)", fCOT, 30], ["tsy", "US yields (Treasury XML)", fTsy, 60, true]];
+  ["news", "News (FXStreet/rss2json + build RSS)", fNews], ["fx", "FX series (Frankfurter/ECB)", fFX, 30], ["cot", "COT (CFTC public API)", fCOT, 30], ["tsy", "US yields (Treasury XML)", fTsy, 60, true]];
 let busy = false, nextAt = 0, timer = null, retryT = null, lastRun = 0;
 const due = (j, force) => force || !j[3] || !st.feeds[j[0]] || !st.feeds[j[0]].okAt || Date.now() - st.feeds[j[0]].okAt > j[3] * 60e3;
 async function runJobs(list) { const res = await Promise.allSettled(list.map((j) => j[2]()));
