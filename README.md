@@ -5,3 +5,5 @@ Rezan Macro Terminal puts gold, forex, yields, DXY, oil and news on one live scr
 **Live site:** https://anaqishah731-svg.github.io/rezan-macro-terminal/
 
 The page is one file (`index.html`). A scheduled GitHub Action rebuilds the daily figures and publishes the site. The one-time clicks are in `HOSTING.md`.
+
+Status: deploy requested 2026-10-19.
