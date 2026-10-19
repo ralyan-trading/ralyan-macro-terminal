@@ -1,9 +1,9 @@
 {
   "meta": {
     "name": "Ralyan Macro Terminal",
-    "asof": "Auto-built 2026-10-19 10:12 UTC \u00b7 yields 2026-10-16 close (real 2026-10-16) \u00b7 calendar 2026-10-19 10:12 UTC",
+    "asof": "Auto-built 2026-10-19 10:18 UTC \u00b7 yields 2026-10-16 close (real 2026-10-16) \u00b7 calendar 2026-10-19 10:18 UTC",
     "disclaimer": "Educational research tool - NOT financial advice. Scores are simple transparent rules, not predictions. Verify all data before trading.",
-    "built_at": "2026-10-19T10:12:05+00:00"
+    "built_at": "2026-10-19T10:18:54+00:00"
   },
   "gold_static": {
     "fri_close": 4165.45,
@@ -280,8 +280,8 @@
     "hy_spread_bp": 323,
     "hy_chg_bp": 12,
     "asof": "2026-10-15",
-    "brent": 108.57,
-    "wti": 101.28,
+    "brent": 108.58,
+    "wti": 101.33,
     "oil_asof": "2026-10-19 (CNBC, front-month futures)",
     "headlines": [
       "US-Iran conflict / Hormuz disruption keeps energy risk elevated",
@@ -357,7 +357,7 @@
     }
   ],
   "ff_calendar": {
-    "fetched_at": "2026-10-19 10:12 UTC",
+    "fetched_at": "2026-10-19 10:18 UTC",
     "source": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
     "events": [
       {
@@ -1208,26 +1208,28 @@
     ]
   ],
   "auto": {
-    "failures": [],
+    "failures": [
+      "market_hist: gold daily unavailable; XAU: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>; DXY: <urlopen error [Errno 104] Connection reset by peer>"
+    ],
     "forexfactory": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
+      "at": "2026-10-19 10:18 UTC",
       "info": "86 events"
     },
     "treasury": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
+      "at": "2026-10-19 10:18 UTC",
       "info": "10Y 5.09 real 2.74 as of 2026-10-16"
     },
     "bls": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
+      "at": "2026-10-19 10:18 UTC",
       "info": "CPI (2026, 9) y/y 3.7 \u00b7 NFP (2026, 9) 29k"
     },
     "cnbc": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
-      "info": "DXY 101.942 Brent 108.57 WTI 101.28"
+      "at": "2026-10-19 10:18 UTC",
+      "info": "DXY 101.938 Brent 108.58 WTI 101.33"
     },
     "manual": {
       "policy": {
@@ -1248,38 +1250,38 @@
     },
     "cot_disagg": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
+      "at": "2026-10-19 10:18 UTC",
       "info": "gold 2026-10-13 swap net -224094 mm net 107089"
     },
     "cot_tff": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
+      "at": "2026-10-19 10:18 UTC",
       "info": "8 markets, last 2026-10-13"
     },
     "bank_participation": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
+      "at": "2026-10-19 10:18 UTC",
       "info": "2026-10-06 26 banks L 20801 S 212816"
     },
     "market_hist": {
-      "ok": true,
+      "ok": false,
       "at": "2026-10-19 10:12 UTC",
-      "info": "9 series, gold to 2026-10-16"
+      "info": "failed 2026-10-19 10:18 UTC: gold daily unavailable; XAU: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1010)>; DXY: <urlopen error [Errno 104] Connection reset by peer>"
     },
     "real_hist": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
+      "at": "2026-10-19 10:18 UTC",
       "info": "53 days to 2026-10-16"
     },
     "news": {
       "ok": true,
-      "at": "2026-10-19 10:12 UTC",
+      "at": "2026-10-19 10:18 UTC",
       "info": "209 fetched, 232 kept (failed: ['rss2json: HTTP Error 422: Unprocessable Entity'])"
     }
   },
   "us_actuals": {
     "source": "BLS public API v1",
-    "fetched_at": "2026-10-19 10:12 UTC",
+    "fetched_at": "2026-10-19 10:18 UTC",
     "items": [
       {
         "re": "^CPI y/y",
@@ -1402,7 +1404,7 @@
       "market": "GOLD - COMEX (088691)",
       "report": "CFTC Disaggregated, futures only (dataset 72hh-3qpy)",
       "note": "Positions as of Tuesday, published Friday 3:30pm ET. [long, short] contracts (100 oz).",
-      "fetched_at": "2026-10-19 10:12 UTC",
+      "fetched_at": "2026-10-19 10:18 UTC",
       "weeks": [
         {
           "date": "2026-04-21",
@@ -2032,7 +2034,7 @@
     },
     "fx_tff": {
       "report": "CFTC Traders in Financial Futures, futures only (dataset gpe5-46if)",
-      "fetched_at": "2026-10-19 10:12 UTC",
+      "fetched_at": "2026-10-19 10:18 UTC",
       "ccy": {
         "USD": [
           {
@@ -3719,7 +3721,7 @@
     },
     "bank_participation": {
       "market": "CMX GOLD",
-      "fetched_at": "2026-10-19 10:12 UTC",
+      "fetched_at": "2026-10-19 10:18 UTC",
       "latest": {
         "report_date": "2026-10-06",
         "us": {
@@ -6535,7 +6537,7 @@
     "missing": []
   },
   "news_archive": {
-    "fetched_at": "2026-10-19 10:12 UTC",
+    "fetched_at": "2026-10-19 10:18 UTC",
     "items": [
       {
         "t": "2026-10-19T09:54+00:00",
@@ -8025,7 +8027,7 @@
   ],
   "drivers": {
     "ok": true,
-    "built_at": "2026-10-19T10:12+00:00",
+    "built_at": "2026-10-19T10:18+00:00",
     "window": {
       "from": "2026-10-09",
       "to": "2026-10-16"
