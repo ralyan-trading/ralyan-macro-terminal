@@ -1,9 +1,9 @@
 {
   "meta": {
     "name": "Rezan Macro Terminal",
-    "asof": "Auto-built 2026-10-18 15:42 UTC \u00b7 yields 2026-10-16 close (real 2026-10-16) \u00b7 calendar 2026-10-18 15:42 UTC",
+    "asof": "Auto-built 2026-10-19 07:24 UTC \u00b7 yields 2026-10-16 close (real 2026-10-16) \u00b7 calendar 2026-10-19 07:24 UTC",
     "disclaimer": "Educational research tool - NOT financial advice. Scores are simple transparent rules, not predictions. Verify all data before trading.",
-    "built_at": "2026-10-18T15:42:19+00:00"
+    "built_at": "2026-10-19T07:24:25+00:00"
   },
   "gold_static": {
     "fri_close": 4165.45,
@@ -66,9 +66,9 @@
       }
     ],
     "dxy_actual": {
-      "value": 101.78,
-      "chg_pct_d": -0.27,
-      "asof": "2026-10-16",
+      "value": 101.94,
+      "chg_pct_d": 0.1,
+      "asof": "2026-10-19",
       "source": "CNBC quote feed (unofficial)"
     }
   },
@@ -280,9 +280,9 @@
     "hy_spread_bp": 323,
     "hy_chg_bp": 12,
     "asof": "2026-10-15",
-    "brent": 109.86,
-    "wti": 101.84,
-    "oil_asof": "2026-10-17 (CNBC, front-month futures)",
+    "brent": 107.27,
+    "wti": 99.59,
+    "oil_asof": "2026-10-19 (CNBC, front-month futures)",
     "headlines": [
       "US-Iran conflict / Hormuz disruption keeps energy risk elevated",
       "Houthis reportedly struck Saudi Aramco HQ (Reuters, Oct 14)",
@@ -357,7 +357,7 @@
     }
   ],
   "ff_calendar": {
-    "fetched_at": "2026-10-18 15:42 UTC",
+    "fetched_at": "2026-10-19 07:24 UTC",
     "source": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
     "events": [
       {
@@ -467,7 +467,7 @@
       {
         "title": "Foreign Direct Investment ytd/y",
         "country": "CNY",
-        "date": "2026-10-19T02:02:00-04:00",
+        "date": "2026-10-19T05:10:00-04:00",
         "impact": "Low",
         "forecast": "",
         "previous": "-5.3%"
@@ -1183,45 +1183,45 @@
     "failures": [],
     "forexfactory": {
       "ok": true,
-      "at": "2026-10-18 15:42 UTC",
+      "at": "2026-10-19 07:24 UTC",
       "info": "86 events"
     },
     "treasury": {
       "ok": true,
-      "at": "2026-10-18 15:42 UTC",
+      "at": "2026-10-19 07:24 UTC",
       "info": "10Y 5.09 real 2.74 as of 2026-10-16"
     },
     "bls": {
       "ok": true,
-      "at": "2026-10-18 15:42 UTC",
+      "at": "2026-10-19 07:24 UTC",
       "info": "CPI (2026, 9) y/y 3.7 \u00b7 NFP (2026, 9) 29k"
     },
     "cnbc": {
       "ok": true,
-      "at": "2026-10-18 15:42 UTC",
-      "info": "DXY 101.779 Brent 109.86 WTI 101.84"
+      "at": "2026-10-19 07:24 UTC",
+      "info": "DXY 101.94 Brent 107.27 WTI 99.59"
     },
     "manual": {
       "policy": {
         "asof": "2026-10-18",
-        "age_days": 0
+        "age_days": 1
       },
       "flows": {
         "asof": null
       },
       "risk_hy": {
         "asof": "2026-10-15",
-        "age_days": 3
+        "age_days": 4
       },
       "fed": {
         "asof": "2026-10-18",
-        "age_days": 0
+        "age_days": 1
       }
     }
   },
   "us_actuals": {
     "source": "BLS public API v1",
-    "fetched_at": "2026-10-18 15:42 UTC",
+    "fetched_at": "2026-10-19 07:24 UTC",
     "items": [
       {
         "re": "^CPI y/y",
