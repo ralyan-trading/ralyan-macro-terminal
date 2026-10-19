@@ -1,4 +1,4 @@
-/* Rezan Macro Terminal v2 - client app. Static/daily data from DATA (data.json, rebuilt by build.py); live data from keyless CORS APIs.
+/* Ralyan Macro Terminal v2 - client app. Static/daily data from DATA (data.json, rebuilt by build.py); live data from keyless CORS APIs.
    Nothing here is invented: if a feed fails the last good value is kept and marked stale, or "n/a" is shown. */
 (function () {
 "use strict";
@@ -850,7 +850,7 @@ function beep(kind) { try { actx = actx || new (window.AudioContext || window.we
     const t = actx.currentTime + i * 0.22; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2); o.start(t); o.stop(t + 0.21); }); } catch (e) {} }
 function toast(msg) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 8000); }
 function notify(msg, kind) { toast("🔔 " + msg); const c = alertCfg(); if (c.sound) beep(kind);
-  try { if ("Notification" in window && Notification.permission === "granted") new Notification("Rezan Macro Terminal", { body: msg }); } catch (e) {} }
+  try { if ("Notification" in window && Notification.permission === "granted") new Notification("Ralyan Macro Terminal", { body: msg }); } catch (e) {} }
 function rAlerts() {
   const c = alertCfg();
   $("b_alerts").innerHTML = `<div class="al"><label><input type="checkbox" id="al_on" ${c.on ? "checked" : ""}> Price / pair alerts enabled</label>

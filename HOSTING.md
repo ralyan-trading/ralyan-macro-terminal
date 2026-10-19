@@ -1,4 +1,4 @@
-# Rezan Macro Terminal - running it 24/7
+# Ralyan Macro Terminal - running it 24/7
 
 The page is ONE self-contained file (`index.html`). Live data (gold, FX, yields, indices, oil, BTC, COT, news) is
 fetched by the visitor's browser every 5 minutes from keyless CORS APIs, so any static host works. The daily

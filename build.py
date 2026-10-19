@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rezan Macro Terminal builder - safe to run unattended (cron / GitHub Actions).
+"""Ralyan Macro Terminal builder - safe to run unattended (cron / GitHub Actions).
 
 Every run it re-fetches what is publicly available WITHOUT keys and stamps dates:
   1. ForexFactory weekly calendar JSON (no browser CORS, so it is pulled here)
@@ -19,7 +19,7 @@ data = json.load(open(data_path))
 UTC = dt.timezone.utc
 now = dt.datetime.now(UTC)
 stamp = now.strftime("%Y-%m-%d %H:%M UTC")
-UA = {"User-Agent": "Mozilla/5.0 (RezanMacroTerminal build)"}
+UA = {"User-Agent": "Mozilla/5.0 (RalyanMacroTerminal build)"}
 auto = data.setdefault("auto", {})
 auto["failures"] = []
 log = lambda *a: print("[build]", *a)

@@ -1,4 +1,4 @@
-"""Rezan Macro Terminal - rule-based 'why is the market moving' engine (stdlib only).
+"""Ralyan Macro Terminal - rule-based 'why is the market moving' engine (stdlib only).
 
 Input: data.json sections market_hist (daily closes), event_archive (ForexFactory), release_log (dated releases with
 actual/forecast/previous), us_actuals (BLS), institutional (CFTC) and news_archive (dated headlines).

@@ -1,4 +1,4 @@
-# Rezan Macro Terminal - rebuild daily and publish to GitHub Pages (free, public repo).
+# Ralyan Macro Terminal - rebuild daily and publish to GitHub Pages (free, public repo).
 # Repo layout = this folder (build.py, data.json, src/, index.html).
 # One-time click: Settings → Pages → Build and deployment → Source: "GitHub Actions".
 # Do not set configure-pages enablement: true. That call needs a personal token;
